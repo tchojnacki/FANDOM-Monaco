@@ -26078,10 +26078,6 @@ interface JQueryEasingFunctions {
  * This work, mw.d.ts, is a derivative of "MediaWiki Core Documentation" by MediaWiki.org, used under CC BY.
  * Source: https://doc.wikimedia.org/mediawiki-core/master/js/
  */
-interface WikiaGlobals {
-  mw: typeof mw;
-  $: JQueryStatic;
-}
 /**
  * Base library for MediaWiki.
  * Exposed globally as mediaWiki with mw as shortcut.
@@ -26160,7 +26156,7 @@ declare namespace mw {
      * Populated on document ready. To use this property, wait for $.ready and be sure to have a module dependency on mediawiki.util which will ensure your document ready handler fires after initialization.
      * Because of the lazy-initialised nature of this property, you're discouraged from using it.
      */
-    const $content: JQuery<HTMLElement>;
+    const $content: JQuery<HTMLDivElement>;
     /**
      * Append a new style block to the head and return the CSSStyleSheet object.
      * @param text CSS to be appended.
@@ -26213,3 +26209,25 @@ declare namespace mw {
  * Exposed globally as mediaWiki with mw as shortcut.
  */
 declare const mediawiki: typeof mw;
+
+declare function importArticle(module: { type: 'script' | 'style', article: string }): HTMLScriptElement[];
+declare function importArticles(module: { type: 'script' | 'style', articles: string[] }): HTMLScriptElement[];
+declare function importScript(page: string): HTMLScriptElement;
+declare function importScriptPage(page: string): HTMLScriptElement;
+declare function importScriptURI(url: string): HTMLScriptElement;
+declare function importStylesheet(page: string): HTMLScriptElement;
+declare function importStylesheetPage(page: string): HTMLScriptElement;
+declare function importStylesheetURI(url: string): HTMLScriptElement;
+
+interface WikiaGlobals {
+  mw: typeof mw;
+  $: JQueryStatic;
+  importArticle(module: { type: 'script' | 'style', article: string }): HTMLScriptElement[];
+  importArticles(module: { type: 'script' | 'style', articles: string[] }): HTMLScriptElement[];
+  importScript(page: string): HTMLScriptElement;
+  importScriptPage(page: string): HTMLScriptElement;
+  importScriptURI(url: string): HTMLScriptElement;
+  importStylesheet(page: string): HTMLScriptElement;
+  importStylesheetPage(page: string): HTMLScriptElement;
+  importStylesheetURI(url: string): HTMLScriptElement;
+}
