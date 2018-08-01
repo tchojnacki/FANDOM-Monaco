@@ -26212,11 +26212,17 @@ declare const mediawiki: typeof mw;
 
 declare function importArticle(module: { type: 'script' | 'style', article: string }): HTMLScriptElement[];
 declare function importArticles(module: { type: 'script' | 'style', articles: string[] }): HTMLScriptElement[];
+/** @deprecated Use importArticle */
 declare function importScript(page: string): HTMLScriptElement;
+/** @deprecated Use importArticle */
 declare function importScriptPage(page: string): HTMLScriptElement;
+/** @deprecated Use importArticle */
 declare function importScriptURI(url: string): HTMLScriptElement;
+/** @deprecated Use importArticle */
 declare function importStylesheet(page: string): HTMLScriptElement;
+/** @deprecated Use importArticle */
 declare function importStylesheetPage(page: string): HTMLScriptElement;
+/** @deprecated Use importArticle */
 declare function importStylesheetURI(url: string): HTMLScriptElement;
 
 interface WikiaGlobals {
@@ -26224,10 +26230,16 @@ interface WikiaGlobals {
   $: JQueryStatic;
   importArticle(module: { type: 'script' | 'style', article: string }): HTMLScriptElement[];
   importArticles(module: { type: 'script' | 'style', articles: string[] }): HTMLScriptElement[];
+  /** @deprecated Use importArticle */
   importScript(page: string): HTMLScriptElement;
+  /** @deprecated Use importArticle */
   importScriptPage(page: string): HTMLScriptElement;
+  /** @deprecated Use importArticle */
   importScriptURI(url: string): HTMLScriptElement;
+  /** @deprecated Use importArticle */
   importStylesheet(page: string): HTMLScriptElement;
+  /** @deprecated Use importArticle */
   importStylesheetPage(page: string): HTMLScriptElement;
+  /** @deprecated Use importArticle */
   importStylesheetURI(url: string): HTMLScriptElement;
 }
