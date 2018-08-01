@@ -26129,7 +26129,7 @@ declare namespace mw {
   /**
    * Registry and firing of events.
    */
-  class Hook {
+  interface Hook {
     /**
      * Register a hook handler.
      * @param handler Function to bind.
