@@ -1,4 +1,4 @@
-/* global monaco, browser */
+/* global monaco, browser, JSHINT */
 require(['vs/editor/editor.main'], async () => {
   async function getBackgroundData () {
     return (await browser.runtime.getBackgroundPage()).data
@@ -35,11 +35,68 @@ require(['vs/editor/editor.main'], async () => {
     readOnly: true
   })
 
+  if (lang === 'javascript') {
+    JSHINT.jshint(window.editor.getValue(), {
+      esversion: 5,
+      curly: true,
+      eqeqeq: true,
+      freeze: true,
+      futurehostile: true,
+      latedef: true,
+      nocomma: true,
+      nonbsp: true,
+      shadow: false,
+      strict: 'implied',
+      '-W117': true,
+      unused: true,
+      asi: true,
+      eqnull: true
+    })
+    monaco.editor.setModelMarkers(window.editor.getModel(), 'jshint', (JSHINT.jshint.data().errors || []).map(e => {
+      return {
+        startLineNumber: e.line,
+        startColumn: e.character,
+        endLineNumber: e.line,
+        endColumn: e.character,
+        message: e.reason,
+        severity: e.code.startsWith('E') ? monaco.Severity.Error : monaco.Severity.Warning
+      }
+    }))
+  }
+
   window.editor.model.onDidChangeContent((event) => {
     if (window.editor.getValue() !== window.previousContent) {
       document.getElementById('publish').textContent = window.previousContent === '' ? 'Publikuj' : 'Zapisz'
     } else {
       document.getElementById('publish').textContent = 'Zamknij'
+    }
+    if (lang === 'javascript') {
+      JSHINT.jshint(window.editor.getValue(), {
+        esversion: 5,
+        curly: true,
+        eqeqeq: true,
+        freeze: true,
+        futurehostile: true,
+        latedef: true,
+        nocomma: true,
+        nonbsp: true,
+        shadow: false,
+        strict: 'implied',
+        '-W117': true,
+        unused: true,
+        asi: true,
+        eqnull: true
+      })
+      monaco.editor.setModelMarkers(window.editor.getModel(), 'jshint', (JSHINT.jshint.data().errors || []).map(e => {
+        return {
+          startLineNumber: e.line,
+          startColumn: e.character,
+          endLineNumber: e.line,
+          endColumn: e.character,
+          message: e.reason,
+          severity: e.code.startsWith('E') ? monaco.Severity.Error : monaco.Severity.Warning
+        }
+      }))
     }
   })
 
