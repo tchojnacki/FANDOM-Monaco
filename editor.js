@@ -22,15 +22,10 @@ require(['vs/editor/editor.main'], async () => {
   window.previousContent = await getPageContent()
 
   if (lang === 'javascript') {
-    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({ noLib: true })
-
-    const extraLibs = ['jquery', 'es5']
-    for (const lib in extraLibs) {
-      monaco.languages.typescript.javascriptDefaults.addExtraLib(
-        (await (await window.fetch(`./libs/${extraLibs[lib]}.d.ts`)).text()),
-        `${extraLibs[lib]}.d.ts`
-      )
-    }
+    monaco.languages.typescript.javascriptDefaults.addExtraLib(
+      (await (await window.fetch('./lib.d.ts')).text()),
+      'lib.d.ts'
+    )
   }
 
   window.editor = monaco.editor.create(document.getElementById('editor-container'), {
