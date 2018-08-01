@@ -1,0 +1,83 @@
+:root {
+  --fds-navy: #002a32;
+  --fds-aqua: #00d6d6;
+  --fds-white: #f2f5f5;
+  --fds-pine: #006661;
+  --monaco-black: #1e1e1e;
+}
+
+body, html, .wrapper, .navbar, #container, #diff-container, #editor-container {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--monaco-black);
+  color: var(--fds-white);
+  font-family: 'Rubik', sans-serif;
+}
+
+.wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  --navbar-height: 40px;
+  min-height: var(--navbar-height);
+  line-height: var(--navbar-height);
+  background-color: var(--fds-navy);
+  color: var(--fds-aqua);
+  text-transform: uppercase;
+  display: flex;
+}
+
+.navbar #pagename {
+  display: block;
+  color: var(--fds-aqua);
+  text-decoration: none;
+}
+
+.navbar .actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center
+}
+
+.navbar .actions input {
+  height: calc(var(--navbar-height) / 2);
+  background-color: var(--fds-pine);
+  border: 1px solid var(--fds-aqua);
+  color: var(--fds-white);
+  padding: 0 0.25em;
+}
+
+.navbar .actions input::placeholder {
+  color: var(--fds-white);
+}
+
+.navbar .actions > div,
+.navbar #pagename {
+  padding: 0 1em;
+  cursor: pointer;
+  -moz-user-select: none;
+  user-select: none;
+  transition-duration: 0.25s;
+}
+
+.navbar .actions > div:hover,
+.navbar #pagename:hover {
+  color: var(--fds-white);
+}
+
+#editor-container, #diff-container {
+  flex: 0;
+  overflow: hidden;
+}
+
+#editor-container {
+  flex: 1;
+}

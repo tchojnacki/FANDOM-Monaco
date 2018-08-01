@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "name": "FANDOM Monaco",
+  "version": "1.0",
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.wikia.com/wiki/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "web_accessible_resources": ["injected.js"],
+  "permissions": [
+    "*://*.wikia.com/*",
+    "webRequest",
+    "tabs"
+  ]
+}

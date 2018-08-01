@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Editor</title>
+    <link rel="stylesheet" type="text/css" href="editor.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik">
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="navbar">
+        <a id="pagename" target="_blank"></a>
+        <div class="actions">
+          <input type="text" placeholder="Opis zmian" id="summary">
+          <div id="diff">Różnica</div>
+          <div id="publish">Zamknij</div>
+        </div>
+      </div>
+      <div id="editor-container"></div>
+      <div id="diff-container"></div>
+    </div>
+    <script src="vs/loader.js"></script>
+    <script src="editor.js"></script>
+  </body>
+</html>
