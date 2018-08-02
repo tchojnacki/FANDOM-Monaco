@@ -37,7 +37,8 @@
           api: decodeURIComponent(event.target.getAttribute('data-monaco-api')),
           title: decodeURIComponent(event.target.getAttribute('data-monaco-title')),
           url: decodeURIComponent(event.target.getAttribute('data-monaco-url')),
-          lang: event.target.getAttribute('data-monaco-lang')
+          lang: event.target.getAttribute('data-monaco-lang'),
+          mode: event.target.getAttribute('data-monaco-mode')
         }
       })
     })

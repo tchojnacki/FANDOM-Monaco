@@ -81,3 +81,7 @@ body {
 #editor-container {
   flex: 1;
 }
+
+#diff, #summary, #diff-container {
+  display: none;
+}

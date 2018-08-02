@@ -15,10 +15,16 @@ require(['vs/editor/editor.main'], async () => {
   }
 
   window.editorVisible = true
-  const { title, url, lang } = await getBackgroundData()
+  const { title, url, lang, mode } = await getBackgroundData()
+  console.log(mode)
   document.title = title
   document.getElementById('pagename').textContent = title
   document.getElementById('pagename').setAttribute('href', url)
+  if (mode !== 'inspect') {
+    document.getElementById('diff').style.display = 'block'
+    document.getElementById('summary').style.display = 'inline-block'
+    document.getElementById('diff-container').style.display = 'block'
+  }
   window.previousContent = await getPageContent()
 
   if (lang === 'javascript') {
@@ -64,77 +70,85 @@ require(['vs/editor/editor.main'], async () => {
     }))
   }
 
-  window.editor.model.onDidChangeContent((event) => {
-    if (window.editor.getValue() !== window.previousContent) {
-      document.getElementById('publish').textContent = window.previousContent === '' ? 'Publikuj' : 'Zapisz'
-    } else {
-      document.getElementById('publish').textContent = 'Zamknij'
-    }
-    if (lang === 'javascript') {
-      JSHINT.jshint(window.editor.getValue(), {
-        esversion: 5,
-        curly: true,
-        eqeqeq: true,
-        freeze: true,
-        futurehostile: true,
-        latedef: true,
-        nocomma: true,
-        nonbsp: true,
-        shadow: false,
-        strict: 'implied',
-        '-W117': true,
-        unused: true,
-        asi: true,
-        eqnull: true
-      })
-      monaco.editor.setModelMarkers(window.editor.getModel(), 'jshint', (JSHINT.jshint.data().errors || []).map(e => {
-        return {
-          startLineNumber: e.line,
-          startColumn: e.character,
-          endLineNumber: e.line,
-          endColumn: e.character,
-          message: e.reason,
-          severity: e.code.startsWith('E') ? monaco.Severity.Error : monaco.Severity.Warning
-        }
-      }))
-    }
-  })
+  if (mode !== 'inspect') {
+    window.editor.model.onDidChangeContent((event) => {
+      if (window.editor.getValue() !== window.previousContent) {
+        document.getElementById('publish').textContent = window.previousContent === '' ? 'Publikuj' : 'Zapisz'
+      } else {
+        document.getElementById('publish').textContent = 'Zamknij'
+      }
+      if (lang === 'javascript') {
+        JSHINT.jshint(window.editor.getValue(), {
+          esversion: 5,
+          curly: true,
+          eqeqeq: true,
+          freeze: true,
+          futurehostile: true,
+          latedef: true,
+          nocomma: true,
+          nonbsp: true,
+          shadow: false,
+          strict: 'implied',
+          '-W117': true,
+          unused: true,
+          asi: true,
+          eqnull: true
+        })
+        monaco.editor.setModelMarkers(window.editor.getModel(), 'jshint', (JSHINT.jshint.data().errors || []).map(e => {
+          return {
+            startLineNumber: e.line,
+            startColumn: e.character,
+            endLineNumber: e.line,
+            endColumn: e.character,
+            message: e.reason,
+            severity: e.code.startsWith('E') ? monaco.Severity.Error : monaco.Severity.Warning
+          }
+        }))
+      }
+    })
 
-  window.diffEditor = monaco.editor.createDiffEditor(document.getElementById('diff-container'))
+    window.diffEditor = monaco.editor.createDiffEditor(document.getElementById('diff-container'))
 
-  window.editor.updateOptions({ readOnly: false })
+    window.editor.updateOptions({ readOnly: false })
+  }
 
   window.addEventListener('resize', () => {
     window.editor.layout()
-    window.diffEditor.layout()
-  })
-
-  document.getElementById('diff').addEventListener('click', async () => {
-    if (window.editorVisible) {
-      window.editorVisible = false
-      document.getElementById('editor-container').style.setProperty('flex', '0')
-      document.getElementById('diff-container').style.setProperty('flex', '1')
-      document.getElementById('diff').textContent = 'Edytuj'
-
-      const originalModel = monaco.editor.createModel(window.previousContent, `text/${lang}`)
-      const modifiedModel = monaco.editor.createModel(window.editor.getValue(), `text/${lang}`)
-
-      window.diffEditor.setModel({
-        original: originalModel,
-        modified: modifiedModel
-      })
-    } else {
-      window.editorVisible = true
-      document.getElementById('editor-container').style.setProperty('flex', '1')
-      document.getElementById('diff-container').style.setProperty('flex', '0')
-      document.getElementById('diff').textContent = 'Różnica'
+    if (mode !== 'inspect') {
+      window.diffEditor.layout()
     }
-    window.editor.layout()
-    window.diffEditor.layout()
   })
+
+  if (mode !== 'inspect') {
+    document.getElementById('diff').addEventListener('click', async () => {
+      if (window.editorVisible) {
+        window.editorVisible = false
+        document.getElementById('editor-container').style.setProperty('flex', '0')
+        document.getElementById('diff-container').style.setProperty('flex', '1')
+        document.getElementById('diff').textContent = 'Edytuj'
+
+        const originalModel = monaco.editor.createModel(window.previousContent, `text/${lang}`)
+        const modifiedModel = monaco.editor.createModel(window.editor.getValue(), `text/${lang}`)
+
+        window.diffEditor.setModel({
+          original: originalModel,
+          modified: modifiedModel
+        })
+      } else {
+        window.editorVisible = true
+        document.getElementById('editor-container').style.setProperty('flex', '1')
+        document.getElementById('diff-container').style.setProperty('flex', '0')
+        document.getElementById('diff').textContent = 'Różnica'
+      }
+      window.editor.layout()
+      window.diffEditor.layout()
+    })
+  }
 
   document.getElementById('publish').addEventListener('click', () => {
-    if (window.editor.getValue() !== window.previousContent) {
+    if (window.editor.getValue() !== window.previousContent && mode !== 'inspect') {
+      // TODO: Check for 'editwarning' here
+      // TODO: Also check for edit conflicts
       browser.runtime.sendMessage({
         type: 'make_edit',
         data: {
