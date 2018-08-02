@@ -49,10 +49,12 @@ body {
 
 .navbar .actions input {
   height: calc(var(--navbar-height) / 2);
-  background-color: var(--fds-pine);
-  border: 1px solid var(--fds-aqua);
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid var(--fds-aqua);
   color: var(--fds-white);
   padding: 0 0.25em;
+  margin: 0 1em;
 }
 
 .navbar .actions input::placeholder {
