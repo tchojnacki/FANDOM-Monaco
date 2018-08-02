@@ -50,7 +50,7 @@ require(['vs/editor/editor.main'], async () => {
   })
 
   if (lang === 'javascript') {
-    JSHINT.jshint(window.editor.getValue(), {
+    window.jshintConfig = {
       esversion: 5,
       curly: true,
       eqeqeq: true,
@@ -61,12 +61,12 @@ require(['vs/editor/editor.main'], async () => {
       nonbsp: true,
       shadow: false,
       strict: 'implied',
-      '-W117': true,
+      '-W117': true, /* No undef - Wikia's got a lot of weird global variables */
       unused: true,
       asi: true,
       eqnull: true
-    })
-    monaco.editor.setModelMarkers(window.editor.getModel(), 'jshint', (JSHINT.jshint.data().errors || []).map(e => {
+    }
+    window.jshintMap = (e) => {
       return {
         startLineNumber: e.line,
         startColumn: e.character,
@@ -75,7 +75,9 @@ require(['vs/editor/editor.main'], async () => {
         message: e.reason,
         severity: e.code.startsWith('E') ? monaco.Severity.Error : monaco.Severity.Warning
       }
-    }))
+    }
+    JSHINT.jshint(window.editor.getValue(), window.jshintConfig)
+    monaco.editor.setModelMarkers(window.editor.getModel(), 'jshint', (JSHINT.jshint.data().errors || []).map(window.jshintMap))
   }
 
   hideSpinner()
@@ -88,32 +90,8 @@ require(['vs/editor/editor.main'], async () => {
         document.getElementById('publish').textContent = 'Zamknij'
       }
       if (lang === 'javascript') {
-        JSHINT.jshint(window.editor.getValue(), {
-          esversion: 5,
-          curly: true,
-          eqeqeq: true,
-          freeze: true,
-          futurehostile: true,
-          latedef: true,
-          nocomma: true,
-          nonbsp: true,
-          shadow: false,
-          strict: 'implied',
-          '-W117': true,
-          unused: true,
-          asi: true,
-          eqnull: true
-        })
-        monaco.editor.setModelMarkers(window.editor.getModel(), 'jshint', (JSHINT.jshint.data().errors || []).map(e => {
-          return {
-            startLineNumber: e.line,
-            startColumn: e.character,
-            endLineNumber: e.line,
-            endColumn: e.character,
-            message: e.reason,
-            severity: e.code.startsWith('E') ? monaco.Severity.Error : monaco.Severity.Warning
-          }
-        }))
+        JSHINT.jshint(window.editor.getValue(), window.jshintConfig)
+        monaco.editor.setModelMarkers(window.editor.getModel(), 'jshint', (JSHINT.jshint.data().errors || []).map(window.jshintMap))
       }
     })
 
