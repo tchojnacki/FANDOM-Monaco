@@ -8,7 +8,7 @@
   action: 'edit',
   title: '${request.data.title}',
   text: '${request.data.text.replace(/\\/g, '\\\\').replace(/'/g, '\\\'').replace(/\n/g, '\\n').replace(/\r/g, '\\r')}',
-  summary: '${request.data.summary.replace(/'/g, '\\\'')}',
+  summary: '${request.data.summary.replace(/\\/g, '\\\\').replace(/'/g, '\\\'').replace(/\n/g, '\\n').replace(/\r/g, '\\r')}',
   token: mw.user.tokens.get('editToken')
 }).then(() => {
   window.location.reload(true);
