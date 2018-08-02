@@ -15,16 +15,38 @@ require(['vs/editor/editor.main'], async () => {
   }
 
   function hideSpinner () {
-    document.getElementsByClassName('overlay')[0].classList.add('hidden')
+    document.getElementsByClassName('overlay')[0].classList.add('invisible')
     setTimeout(() => {
-      document.getElementsByClassName('overlay')[0].style.display = 'none'
-      document.getElementsByClassName('spinner')[0].style.display = 'none'
+      document.getElementsByClassName('spinner')[0].classList.add('hidden')
+      document.getElementsByClassName('dialog')[0].classList.remove('hidden')
     }, 500)
+  }
+
+  function showDialog (title, content, actions) {
+    return new Promise((resolve) => {
+      const overlay = document.getElementsByClassName('overlay')[0]
+      const dialog = document.getElementsByClassName('dialog')[0]
+      const dialogActions = dialog.querySelector('.dialog-actions')
+      dialog.querySelector('.dialog-title').textContent = title
+      dialog.querySelector('.dialog-content').textContent = content
+      overlay.classList.remove('invisible')
+
+      dialogActions.innerHTML = ''
+      actions.forEach((a) => {
+        const button = document.createElement('div')
+        button.classList.add('dialog-button')
+        button.textContent = a.text
+        button.addEventListener('click', () => {
+          resolve(a.action)
+          overlay.classList.add('invisible')
+        })
+        dialogActions.appendChild(button)
+      })
+    })
   }
 
   window.editorVisible = true
   const { title, url, lang, mode } = await getBackgroundData()
-  console.log(mode)
   document.title = title
   document.getElementById('pagename').textContent = title
   document.getElementById('pagename').setAttribute('href', url)
@@ -133,10 +155,25 @@ require(['vs/editor/editor.main'], async () => {
     })
   }
 
-  document.getElementById('publish').addEventListener('click', () => {
+  document.getElementById('publish').addEventListener('click', async () => {
     if (window.editor.getValue() !== window.previousContent && mode !== 'inspect') {
-      // TODO: Check for 'editwarning' here
-      // TODO: Also check for edit conflicts
+      if (mode === 'editwarning') {
+        const dialog = await showDialog(
+          'Nie jesteś administratorem',
+          'Edytujesz ten plik jedynie na mocy swoich uprawnień globalnych. Upewnij się, że masz zgodę lokalnej społeczności na dokonanie zmian.',
+          [{
+            action: 'CANCEL',
+            text: 'Anuluj'
+          }, {
+            action: 'PUBLISH',
+            text: 'Publikuj'
+          }]
+        )
+        if (dialog !== 'PUBLISH') {
+          return
+        }
+      }
+      // TODO: Check for edit conflicts
       browser.runtime.sendMessage({
         type: 'make_edit',
         data: {

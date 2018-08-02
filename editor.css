@@ -2,6 +2,7 @@
   --fds-navy: #002a32;
   --fds-aqua: #00d6d6;
   --fds-white: #f2f5f5;
+  --fds-gray: #bed1cf;
   --fds-pine: #006661;
   --monaco-black: #1e1e1e;
 }
@@ -97,6 +98,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: opacity 0.5s;
 }
 
 .spinner {
@@ -110,17 +112,53 @@ body {
   animation: spin 1.25s linear infinite;
 }
 
-.hidden {
-  animation: hide 0.5s linear forwards;
+.dialog {
+  background-color: var(--fds-white);
+  color: var(--monaco-black);
+  border-radius: 2px;
+  min-width: 25%;
+  max-width: 500px;
+  width: auto;
+  margin: 1em;
 }
 
-@keyframes hide {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
+.dialog-title {
+  font-size: 1.5em;
+  line-height: 28px;
+  padding: 1em 1em 0 1em;
+}
+
+.dialog-content {
+  font-size: 1em;
+  line-height: 1.5em;
+  padding: 1.5em;
+}
+
+.dialog-actions {
+  border-top: 1px solid var(--fds-gray);
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.25em 0 0.5em 0;
+}
+
+.dialog-button {
+  padding: 0.5em 1em;
+  cursor: pointer;
+  color: var(--fds-aqua);
+  transition: opacity 0.25s;
+}
+
+.dialog-button:hover {
+  opacity: 0.5;
+}
+
+.invisible {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hidden {
+  display: none;
 }
 
 @keyframes spin {
