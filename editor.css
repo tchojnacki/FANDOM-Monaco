@@ -85,3 +85,47 @@ body {
 #diff, #summary, #diff-container {
   display: none;
 }
+
+.overlay {
+  position: fixed;
+  left: 0; width: 100vw;
+  top: 0; height: 100vh;
+  z-index: 1; /* Display over the editor */
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner {
+  --spinner-size: 10vh;
+  width: var(--spinner-size);
+  height: var(--spinner-size);
+  border-radius: 50%;
+  border: calc(var(--spinner-size) / 10) solid transparent;
+  border-top-color: var(--fds-aqua);
+  border-right-color: var(--fds-aqua);
+  animation: spin 1.25s linear infinite;
+}
+
+.hidden {
+  animation: hide 0.5s linear forwards;
+}
+
+@keyframes hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

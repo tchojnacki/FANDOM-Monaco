@@ -14,6 +14,14 @@ require(['vs/editor/editor.main'], async () => {
     return content
   }
 
+  function hideSpinner () {
+    document.getElementsByClassName('overlay')[0].classList.add('hidden')
+    setTimeout(() => {
+      document.getElementsByClassName('overlay')[0].style.display = 'none'
+      document.getElementsByClassName('spinner')[0].style.display = 'none'
+    }, 500)
+  }
+
   window.editorVisible = true
   const { title, url, lang, mode } = await getBackgroundData()
   console.log(mode)
@@ -69,6 +77,8 @@ require(['vs/editor/editor.main'], async () => {
       }
     }))
   }
+
+  hideSpinner()
 
   if (mode !== 'inspect') {
     window.editor.model.onDidChangeContent((event) => {
