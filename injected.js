@@ -49,7 +49,7 @@
   }
 
   if (mode !== null && lang !== null) {
-    window.$('.page-header__contribution-buttons .wds-list').append(
+    window.$('.page-header__contribution-buttons .wds-list').prepend(
       window.$('<li>').append(
         window.$('<a>', {
           'text': 'Monaco',
