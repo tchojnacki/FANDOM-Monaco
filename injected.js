@@ -4,7 +4,8 @@
   }
   const config = window.mw.config.get(['wgPageName', 'wgScriptPath', 'wgUserName', 'wgNamespaceNumber', 'wgUserGroups', 'wgCityId', 'wgWikiaPageActions'])
   const hasGlobalEI = ['content-volunteer', 'helper', 'util', 'staff', 'vanguard', 'vstf'].some(group => config.wgUserGroups.includes(group))
-  const hasLocalEI = config.wgUserGroups.includes('sysop') || config.wgCityId === '7931' // Dev Wiki shouldn't give a warning
+  const hasLocalEI = config.wgUserGroups.includes('sysop')
+  const isDevWiki = config.wgCityId === '7931' // Dev Wiki shouldn't give a warning
   const canEditOtherUsers = config.wgUserGroups.includes('staff')
   const canEditCurrent = config.wgWikiaPageActions.find(a => a.id === 'page:Edit') !== undefined
   const isJS = config.wgPageName.endsWith('.js')
@@ -40,7 +41,7 @@
       lang = 'css'
     }
     if (canEditCurrent) { // Has local or global editinterface
-      if (hasGlobalEI && !hasLocalEI) { // Is editing using global editinterface
+      if (hasGlobalEI && !hasLocalEI && !isDevWiki) { // Is editing using global editinterface
         mode = 'editwarning'
       } else {
         mode = 'edit'
@@ -64,4 +65,21 @@
       )
     )
   }
+
+  window.addEventListener('message', (e) => {
+    if (e.source === window && e.data.type && e.data.type === 'MAKE_EDIT') {
+      if (e.data.data === undefined || e.data.data.title === undefined || e.data.data.text === undefined || e.data.data.summary === undefined) {
+        return
+      }
+      new window.mw.Api().post({
+        action: 'edit',
+        title: e.data.data.title,
+        text: e.data.data.text,
+        summary: e.data.data.summary,
+        token: window.mw.user.tokens.get('editToken')
+      }).then(() => {
+        window.location.reload(true)
+      })
+    }
+  }, false)
 })()
