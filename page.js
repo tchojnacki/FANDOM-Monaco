@@ -2,7 +2,7 @@
   if (window.$('#FandomMonaco').length !== 0) {
     return
   }
-  const config = window.mw.config.get(['wgPageName', 'wgScriptPath', 'wgUserName', 'wgNamespaceNumber', 'wgUserGroups', 'wgCityId', 'wgWikiaPageActions'])
+  const config = window.mw.config.get(['wgPageName', 'wgScriptPath', 'wgArticlePath', 'wgUserName', 'wgNamespaceNumber', 'wgUserGroups', 'wgCityId', 'wgWikiaPageActions'])
   const hasGlobalEI = ['content-volunteer', 'helper', 'util', 'staff', 'vanguard', 'vstf'].some(group => config.wgUserGroups.includes(group))
   const hasLocalEI = config.wgUserGroups.includes('sysop')
   const isDevWiki = config.wgCityId === '7931' // Dev Wiki shouldn't give a warning
@@ -55,27 +55,32 @@
         window.$('<a>', {
           'text': 'Monaco',
           'href': '#',
-          'id': 'FandomMonaco',
-          'data-monaco-api': encodeURIComponent(window.location.origin + config.wgScriptPath),
-          'data-monaco-title': encodeURIComponent(config.wgPageName),
-          'data-monaco-url': encodeURIComponent(window.location.href),
-          'data-monaco-lang': lang,
-          'data-monaco-mode': mode
+          'id': 'FandomMonaco'
+        }).click((e) => {
+          e.preventDefault()
+          window.postMessage({
+            type: 'OPEN_EDITOR:P->C',
+            data: {
+              title: config.wgPageName,
+              api: window.location.origin + config.wgScriptPath,
+              url: encodeURI(window.location.origin + config.wgArticlePath.replace('$1', config.wgPageName)),
+              lang: lang,
+              mode: mode
+            }
+          }, window.location.origin)
         })
       )
     )
+    window.mw.hook('fandommonaco.add').fire()
   }
 
-  window.addEventListener('message', (e) => {
-    if (e.source === window && e.data.type && e.data.type === 'MAKE_EDIT') {
-      if (e.data.data === undefined || e.data.data.title === undefined || e.data.data.text === undefined || e.data.data.summary === undefined) {
-        return
-      }
+  window.addEventListener('message', (request) => {
+    if (request.source === window && request.data.type && request.data.type === 'MAKE_EDIT:C->P') {
       new window.mw.Api().post({
         action: 'edit',
-        title: e.data.data.title,
-        text: e.data.data.text,
-        summary: e.data.data.summary,
+        title: request.data.data.title,
+        text: request.data.data.text,
+        summary: request.data.data.summary,
         token: window.mw.user.tokens.get('editToken')
       }).then(() => {
         window.location.reload(true)

@@ -1,47 +1,27 @@
-/* global browser, MutationObserver */
+/* global browser */
 (() => {
   const s = document.createElement('script')
-  s.src = browser.extension.getURL('injected.js')
+  s.src = browser.extension.getURL('page.js')
   s.onload = function () {
     this.remove()
   }
   document.head.appendChild(s)
 
-  function setEventListener () {
-    document.getElementById('FandomMonaco').addEventListener('click', (event) => {
-      event.preventDefault()
-      browser.runtime.sendMessage({
-        type: 'open_editor',
-        data: {
-          token: decodeURIComponent(event.target.getAttribute('data-monaco-token')),
-          api: decodeURIComponent(event.target.getAttribute('data-monaco-api')),
-          title: decodeURIComponent(event.target.getAttribute('data-monaco-title')),
-          url: decodeURIComponent(event.target.getAttribute('data-monaco-url')),
-          lang: event.target.getAttribute('data-monaco-lang'),
-          mode: event.target.getAttribute('data-monaco-mode')
-        }
-      })
-    })
-  }
-
-  if (document.getElementById('FandomMonaco')) {
-    setEventListener()
-  } else {
-    const observer = new MutationObserver(() => {
-      if (document.getElementById('FandomMonaco')) {
-        setEventListener()
-        observer.disconnect()
-      }
-    })
-    observer.observe(document.querySelector('.page-header__contribution-buttons .wds-list'), { childList: true })
-  }
-
   browser.runtime.onMessage.addListener((request) => {
-    if (request.type === 'make_edit') {
+    if (request.type === 'MAKE_EDIT:B->C') {
       window.postMessage({
-        type: 'MAKE_EDIT',
+        type: 'MAKE_EDIT:C->P',
         data: request.data
-      }, '*')
+      }, window.location.origin)
+    }
+  })
+
+  window.addEventListener('message', (request) => {
+    if (request.source === window && request.data.type && request.data.type === 'OPEN_EDITOR:P->C') {
+      browser.runtime.sendMessage({
+        type: 'OPEN_EDITOR:C->B',
+        data: request.data.data
+      })
     }
   })
 })()

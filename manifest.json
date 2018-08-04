@@ -11,7 +11,8 @@
       "js": ["content.js"]
     }
   ],
-  "web_accessible_resources": ["injected.js"],
+  "web_accessible_resources": ["page.js"],
+  "content_security_policy": "script-src 'self' https://cdnjs.cloudflare.com; object-src 'self'",
   "permissions": [
     "*://*.wikia.com/*",
     "webRequest",
