@@ -175,7 +175,7 @@ require(['vs/editor/editor.main'], async () => {
       }
       // TODO: Check for edit conflicts
       browser.runtime.sendMessage({
-        type: 'make_edit',
+        type: 'MAKE_EDIT:E->B',
         data: {
           text: window.editor.getValue(),
           summary: document.getElementById('summary').value
@@ -183,7 +183,7 @@ require(['vs/editor/editor.main'], async () => {
       })
     } else {
       browser.runtime.sendMessage({
-        type: 'close_editor'
+        type: 'CLOSE_EDITOR:E->B'
       })
     }
   })

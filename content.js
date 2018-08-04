@@ -11,7 +11,7 @@
     document.getElementById('FandomMonaco').addEventListener('click', (event) => {
       event.preventDefault()
       browser.runtime.sendMessage({
-        type: 'open_editor',
+        type: 'OPEN_EDITOR:C->B',
         data: {
           token: decodeURIComponent(event.target.getAttribute('data-monaco-token')),
           api: decodeURIComponent(event.target.getAttribute('data-monaco-api')),
@@ -37,9 +37,9 @@
   }
 
   browser.runtime.onMessage.addListener((request) => {
-    if (request.type === 'make_edit') {
+    if (request.type === 'MAKE_EDIT:B->C') {
       window.postMessage({
-        type: 'MAKE_EDIT',
+        type: 'MAKE_EDIT:C->P',
         data: request.data
       }, '*')
     }

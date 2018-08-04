@@ -58,7 +58,7 @@
           'id': 'FandomMonaco',
           'data-monaco-api': encodeURIComponent(window.location.origin + config.wgScriptPath),
           'data-monaco-title': encodeURIComponent(config.wgPageName),
-          'data-monaco-url': encodeURIComponent(window.location.href),
+          'data-monaco-url': encodeURIComponent(window.location.href.split(/\?|#/)[0]),
           'data-monaco-lang': lang,
           'data-monaco-mode': mode
         })
@@ -67,7 +67,7 @@
   }
 
   window.addEventListener('message', (e) => {
-    if (e.source === window && e.data.type && e.data.type === 'MAKE_EDIT') {
+    if (e.source === window && e.data.type && e.data.type === 'MAKE_EDIT:C->P') {
       if (e.data.data === undefined || e.data.data.title === undefined || e.data.data.text === undefined || e.data.data.summary === undefined) {
         return
       }
