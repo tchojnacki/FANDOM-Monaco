@@ -1,7 +1,7 @@
 /* global browser */
 (() => {
   const s = document.createElement('script')
-  s.src = browser.extension.getURL('injected.js')
+  s.src = browser.extension.getURL('page.js')
   s.onload = function () {
     this.remove()
   }

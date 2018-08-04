@@ -11,7 +11,7 @@
       "js": ["content.js"]
     }
   ],
-  "web_accessible_resources": ["injected.js"],
+  "web_accessible_resources": ["page.js"],
   "permissions": [
     "*://*.wikia.com/*",
     "webRequest",
