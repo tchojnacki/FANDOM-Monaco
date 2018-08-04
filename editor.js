@@ -7,7 +7,7 @@ require(['vs/editor/editor.main'], async () => {
   async function getPageContent () {
     const data = await getBackgroundData()
     const response = await window.fetch(`${data.api}/api.php?action=query&titles=${data.title}&prop=revisions&rvprop=content&format=json&cb=${Math.floor(new Date().getTime() / 1000)}`, {
-      cache: 'no-store'
+      cache: 'no-store' /* The CacheBuster might be heavy on the servers but we NEED the most recent version if we want to edit. */
     })
     const json = await response.json()
     const content = json.query.pages[Object.keys(json.query.pages)[0]].revisions ? json.query.pages[Object.keys(json.query.pages)[0]].revisions[0]['*'] : ''
