@@ -63,7 +63,7 @@
             data: {
               title: config.wgPageName,
               api: window.location.origin + config.wgScriptPath,
-              url: window.location.origin + config.wgArticlePath.replace('$1', config.wgPageName),
+              url: encodeURI(window.location.origin + config.wgArticlePath.replace('$1', config.wgPageName)),
               lang: lang,
               mode: mode
             }
