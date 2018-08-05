@@ -47,22 +47,48 @@ browser.runtime.onMessage.addListener(async (request, sender) => {
               networkerror: window.msg('NETWORK_ERROR', window.data.i18n)
             }
           })
+          browser.tabs.onUpdated.addListener(function listener (tabId, info) {
+            if (info.status === 'complete' && tabId === foundTabs[0]) { // Wait until the tab is loaded
+              browser.tabs.onUpdated.removeListener(listener)
+              browser.tabs.sendMessage(foundTabs[0], {
+                type: 'DISPLAY_BANNER:B->C',
+                data: {
+                  text: window.msg('EDIT_SUCCESS', window.data.i18n),
+                  type: 'confirm',
+                  timeout: 2000
+                }
+              })
+            }
+          })
         } else { // Tab got closed, open a new window
           browser.tabs.create({
             url: window.data.url
           }, async (newTab) => {
+            let alreadyOpened = false
             browser.tabs.onUpdated.addListener(function listener (tabId, info) {
               if (info.status === 'complete' && tabId === newTab.id) { // Wait until the tab is loaded
-                browser.tabs.onUpdated.removeListener(listener)
-                browser.tabs.sendMessage(newTab.id, {
-                  type: 'MAKE_EDIT:B->C',
-                  data: {
-                    ...request.data,
-                    title: window.data.title,
-                    requesterror: window.msg('REQUEST_ERROR', window.data.i18n),
-                    networkerror: window.msg('NETWORK_ERROR', window.data.i18n)
-                  }
-                })
+                if (alreadyOpened) {
+                  browser.tabs.onUpdated.removeListener(listener)
+                  browser.tabs.sendMessage(newTab.id, {
+                    type: 'DISPLAY_BANNER:B->C',
+                    data: {
+                      text: window.msg('EDIT_SUCCESS', window.data.i18n),
+                      type: 'confirm',
+                      timeout: 2000
+                    }
+                  })
+                } else {
+                  alreadyOpened = true
+                  browser.tabs.sendMessage(newTab.id, {
+                    type: 'MAKE_EDIT:B->C',
+                    data: {
+                      ...request.data,
+                      title: window.data.title,
+                      requesterror: window.msg('REQUEST_ERROR', window.data.i18n),
+                      networkerror: window.msg('NETWORK_ERROR', window.data.i18n)
+                    }
+                  })
+                }
               }
             })
           })

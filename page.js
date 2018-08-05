@@ -64,7 +64,7 @@
               title: config.wgPageName,
               revid: config.wgCurRevisionId,
               api: window.location.origin + config.wgScriptPath,
-              url: encodeURI(window.location.origin + config.wgArticlePath.replace('$1', config.wgPageName)),
+              url: window.location.href.split(/\?|#/)[0],
               lang: lang,
               mode: mode,
               i18n: config.wgUserLanguage
@@ -88,7 +88,7 @@
             token: window.mw.user.tokens.get('editToken')
           }).done((data) => {
             if (data && data.edit && data.edit.result && data.edit.result === 'Success') {
-              window.location.reload(true)
+              window.location.reload()
             } else {
               new window.BannerNotification(request.data.data.requesterror || '[REQUEST_ERROR]', 'error').show()
             }
