@@ -47,10 +47,8 @@ class FMEditor {
     return this.i18n[msg] ? this.i18n[msg] : `[${msg}]`
   }
 
-  async getPageContent () {
-    const response = await window.fetch(`${this.bgData.api}/api.php?action=query&titles=${this.bgData.title}&prop=revisions&rvprop=content&format=json&cb=${Math.floor(new Date().getTime() / 1000)}`, {
-      cache: 'no-store' // The CacheBuster might be heavy on the servers but we NEED the most recent version if we want to edit.
-    })
+  async getPageContent (newest) {
+    const response = await window.fetch(`${this.bgData.api}/api.php?format=json&action=query&prop=revisions&rvprop=content&` + (newest ? `titles=${this.bgData.title}&cb=${new Date().getTime() / 1000}` : `revids=${this.bgData.revid}`))
     const json = await response.json()
     const content = json.query.pages[Object.keys(json.query.pages)[0]].revisions ? json.query.pages[Object.keys(json.query.pages)[0]].revisions[0]['*'] : ''
     return content
