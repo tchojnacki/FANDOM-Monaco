@@ -8,21 +8,25 @@
   const isDevWiki = config.wgCityId === '7931' // Dev Wiki shouldn't give a warning
   const canEditOtherUsers = config.wgUserGroups.includes('staff')
   const canEditCurrent = config.wgWikiaPageActions.find(a => a.id === 'page:Edit') !== undefined
-  const isJS = config.wgPageName.endsWith('.js')
+  const isJS = config.wgPageName.endsWith('.js') || config.wgPageName.endsWith('.javascript')
   const isCSS = config.wgPageName.endsWith('.css')
+  const isJSON = config.wgPageName.endsWith('.json')
   let lang = null
   let mode = null // or 'inspect' or 'edit' or 'editwarning'
   // Currently supported:
   // local and global CSS and JS user pages
   // CSS and JS MW pages
+  if (isJS) {
+    lang = 'javascript'
+  } else if (isCSS) {
+    lang = 'css'
+  } else if (isJSON) {
+    lang = 'json'
+  }
+
   if (config.wgNamespaceNumber === 2) { // User pages
-    if (isJS || isCSS) {
+    if (isJS || isCSS || isJSON) {
       mode = 'inspect'
-    }
-    if (isJS) {
-      lang = 'javascript'
-    } else if (isCSS) {
-      lang = 'css'
     }
     if (canEditCurrent) { // User page owned (or is Staff)
       if (canEditOtherUsers && !config.wgPageName.match(`:${config.wgUserName}\\/.*\\.(css|js)$`)) { // Is Staff on another user page
@@ -32,13 +36,8 @@
       }
     }
   } else if (config.wgNamespaceNumber === 8) { // MW pages
-    if (isJS || isCSS) {
+    if (isJS || isCSS || isJSON) {
       mode = 'inspect'
-    }
-    if (isJS) {
-      lang = 'javascript'
-    } else if (isCSS) {
-      lang = 'css'
     }
     if (canEditCurrent) { // Has local or global editinterface
       if (hasGlobalEI && !hasLocalEI && !isDevWiki) { // Is editing using global editinterface
