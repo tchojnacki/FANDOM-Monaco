@@ -2,7 +2,7 @@
   if (window.$('#FandomMonaco').length !== 0) {
     return
   }
-  const config = window.mw.config.get(['wgPageName', 'wgScriptPath', 'wgArticlePath', 'wgUserName', 'wgNamespaceNumber', 'wgUserGroups', 'wgCityId', 'wgWikiaPageActions'])
+  const config = window.mw.config.get(['wgPageName', 'wgScriptPath', 'wgArticlePath', 'wgUserName', 'wgUserLanguage', 'wgNamespaceNumber', 'wgUserGroups', 'wgCityId', 'wgWikiaPageActions'])
   const hasGlobalEI = ['content-volunteer', 'helper', 'util', 'staff', 'vanguard', 'vstf'].some(group => config.wgUserGroups.includes(group))
   const hasLocalEI = config.wgUserGroups.includes('sysop')
   const isDevWiki = config.wgCityId === '7931' // Dev Wiki shouldn't give a warning
@@ -65,7 +65,8 @@
               api: window.location.origin + config.wgScriptPath,
               url: encodeURI(window.location.origin + config.wgArticlePath.replace('$1', config.wgPageName)),
               lang: lang,
-              mode: mode
+              mode: mode,
+              i18n: config.wgUserLanguage
             }
           }, window.location.origin)
         })

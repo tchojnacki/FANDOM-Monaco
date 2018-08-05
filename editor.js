@@ -10,6 +10,7 @@ class FMEditor {
 
   async init () {
     await this.getBackgroundData() // Now this.bgData exists
+    await this.getI18n() // Now this.i18nMsg() can be used
     this.setDocumentUp()
     this.previousContent = await this.getPageContent()
     await this.setEditorsUp() // Now this.editor exists (and sometimes this.diffEditor)
@@ -22,6 +23,30 @@ class FMEditor {
     this.bgData = (await browser.runtime.getBackgroundPage()).data
   }
 
+  async getI18n () {
+    const bg = await browser.runtime.getBackgroundPage()
+    const i18n = bg.i18nReady ? bg.i18n : await bg.getTranslations()
+
+    if (i18n[this.bgData.i18n]) {
+      if (i18n.en) { // Fallback to en
+        Object.entries(i18n.en).forEach((m) => {
+          if (!i18n[this.bgData.i18n][m[0]]) {
+            i18n[this.bgData.i18n][m[0]] = m[1]
+          }
+        })
+      }
+      this.i18n = i18n[this.bgData.i18n]
+    } else if (i18n.en) {
+      this.i18n = i18n.en
+    } else {
+      this.i18n = {}
+    }
+  }
+
+  i18nMsg (msg) {
+    return this.i18n[msg] ? this.i18n[msg] : `[${msg}]`
+  }
+
   async getPageContent () {
     const response = await window.fetch(`${this.bgData.api}/api.php?action=query&titles=${this.bgData.title}&prop=revisions&rvprop=content&format=json&cb=${Math.floor(new Date().getTime() / 1000)}`, {
       cache: 'no-store' // The CacheBuster might be heavy on the servers but we NEED the most recent version if we want to edit.
@@ -32,7 +57,13 @@ class FMEditor {
   }
 
   setDocumentUp () {
+    document.title = this.bgData.title
     this.elems.get('pagename').textContent = this.bgData.title
+
+    this.elems.get('diff').textContent = this.i18nMsg('DIFF')
+    this.elems.get('publish').textContent = this.i18nMsg('CLOSE')
+    this.elems.get('summary').placeholder = this.i18nMsg('SUMMARY')
+
     this.elems.get('pagename').setAttribute('href', this.bgData.url)
     if (this.bgData.mode !== 'inspect') {
       this.elems.get('diff').style.display = 'block'
@@ -102,9 +133,9 @@ class FMEditor {
     if (this.bgData.mode !== 'inspect') {
       this.editor.model.onDidChangeContent((event) => {
         if (this.currentContent !== this.previousContent) {
-          this.elems.get('publish').textContent = this.previousContent === '' ? 'Publikuj' : 'Zapisz'
+          this.elems.get('publish').textContent = this.previousContent === '' ? this.i18nMsg('PUBLISH') : this.i18nMsg('SAVE')
         } else {
-          this.elems.get('publish').textContent = 'Zamknij'
+          this.elems.get('publish').textContent = this.i18nMsg('CLOSE')
         }
         if (this.bgData.lang === 'javascript') {
           this.linter.lint()
@@ -116,7 +147,7 @@ class FMEditor {
           this.editorVisible = false
           this.elems.get('editor-container').style.setProperty('flex', '0')
           this.elems.get('diff-container').style.setProperty('flex', '1')
-          this.elems.get('diff').textContent = 'Edytuj'
+          this.elems.get('diff').textContent = this.i18nMsg('EDIT')
 
           const originalModel = monaco.editor.createModel(this.previousContent, `text/${this.bgData.lang}`)
           const modifiedModel = monaco.editor.createModel(this.currentContent, `text/${this.bgData.lang}`)
@@ -129,7 +160,7 @@ class FMEditor {
           this.editorVisible = true
           this.elems.get('editor-container').style.setProperty('flex', '1')
           this.elems.get('diff-container').style.setProperty('flex', '0')
-          this.elems.get('diff').textContent = 'Różnica'
+          this.elems.get('diff').textContent = this.i18nMsg('DIFF')
         }
         this.editor.layout()
         this.diffEditor.layout()
@@ -140,14 +171,14 @@ class FMEditor {
       if (this.currentContent !== this.previousContent && this.bgData.mode !== 'inspect') {
         if (this.bgData.mode === 'editwarning') {
           const dialog = await this.showDialog(
-            'Nie jesteś administratorem',
-            'Edytujesz ten plik jedynie na mocy swoich uprawnień globalnych. Upewnij się, że masz zgodę lokalnej społeczności na dokonanie zmian.',
+            this.i18nMsg('EW_TITLE'),
+            this.i18nMsg('EW_DESC'),
             [{
               action: 'CANCEL',
-              text: 'Anuluj'
+              text: this.i18nMsg('CANCEL')
             }, {
               action: 'PUBLISH',
-              text: 'Publikuj'
+              text: this.i18nMsg('PUBLISH')
             }]
           )
           if (dialog !== 'PUBLISH') {
