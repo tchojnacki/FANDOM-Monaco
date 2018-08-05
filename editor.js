@@ -1,9 +1,10 @@
 /* global monaco, browser, JSHINT */
 
 class FMEditor {
-  constructor (elements) {
+  constructor (elements, linter) {
     this.editorVisible = true
     this.elems = elements
+    this.linter = linter
     FMEditor.instance = this
   }
 
@@ -54,41 +55,12 @@ class FMEditor {
       readOnly: true
     })
     if (this.bgData.lang === 'javascript' && this.bgData.mode !== 'inspect') {
-      this.lint()
+      this.linter.lint()
       this.diffEditor = monaco.editor.createDiffEditor(this.elems.get('diff-container'))
     }
     if (this.bgData.mode !== 'inspect') {
       this.editor.updateOptions({ readOnly: false })
     }
-  }
-
-  lint () {
-    JSHINT.jshint(this.currentContent, {
-      esversion: 5,
-      curly: true,
-      eqeqeq: true,
-      freeze: true,
-      futurehostile: true,
-      latedef: true,
-      nocomma: true,
-      nonbsp: true,
-      shadow: false,
-      strict: 'implied',
-      '-W117': true, // No undef - Wikia's got a lot of weird global variables
-      unused: true,
-      asi: true,
-      eqnull: true
-    })
-    monaco.editor.setModelMarkers(this.editor.getModel(), 'jshint', (JSHINT.jshint.data().errors || []).map((e) => {
-      return {
-        startLineNumber: e.line,
-        startColumn: e.character,
-        endLineNumber: e.line,
-        endColumn: e.character,
-        message: e.reason,
-        severity: e.code.startsWith('E') ? monaco.Severity.Error : monaco.Severity.Warning
-      }
-    }))
   }
 
   hideSpinner () {
@@ -135,7 +107,7 @@ class FMEditor {
           this.elems.get('publish').textContent = 'Zamknij'
         }
         if (this.bgData.lang === 'javascript') {
-          this.lint()
+          this.linter.lint()
         }
       })
 
@@ -187,7 +159,7 @@ class FMEditor {
           type: 'MAKE_EDIT:E->B',
           data: {
             text: this.currentContent,
-            summary: this.elems.get('summary').value
+            summary: this.editSummary
           }
         })
       } else {
@@ -200,6 +172,10 @@ class FMEditor {
 
   get currentContent () {
     return this.editor.getValue()
+  }
+
+  get editSummary () {
+    return this.elems.get('summary').value
   }
 }
 
@@ -225,6 +201,27 @@ class FMElements {
   }
 }
 
+class FMLinter {
+  constructor (config) {
+    this.config = config
+    FMLinter.instance = this
+  }
+
+  lint () {
+    JSHINT.jshint(FMEditor.instance.currentContent, this.config)
+    monaco.editor.setModelMarkers(FMEditor.instance.editor.getModel(), 'jshint', (JSHINT.jshint.data().errors || []).map((e) => {
+      return {
+        startLineNumber: e.line,
+        startColumn: e.character,
+        endLineNumber: e.line,
+        endColumn: e.character,
+        message: e.reason,
+        severity: e.code.startsWith('E') ? monaco.Severity.Error : monaco.Severity.Warning
+      }
+    }))
+  }
+}
+
 require(['vs/editor/editor.main'], async () => {
   await new FMEditor(new FMElements({
     'pagename': '#pagename',
@@ -239,5 +236,20 @@ require(['vs/editor/editor.main'], async () => {
     'dialog-title': '.dialog-title',
     'dialog-content': '.dialog-content',
     'dialog-actions': '.dialog-actions'
+  }), new FMLinter({
+    esversion: 5, // Let's hope ResourceLoader will start to support higher version soon
+    curly: true,
+    eqeqeq: true,
+    freeze: true,
+    futurehostile: true,
+    latedef: true,
+    nocomma: true,
+    nonbsp: true,
+    shadow: false,
+    strict: 'implied',
+    unused: true,
+    asi: true, // No missing semicolon error - it's completely fine to ommit semicolons in modern JS
+    eqnull: true,
+    '-W117': true // No undef - Wikia's got a lot of weird global variables
   })).init()
 })
