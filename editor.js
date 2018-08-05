@@ -147,12 +147,9 @@ class FMEditor {
           this.elems.get('diff-container').style.setProperty('flex', '1')
           this.elems.get('diff').textContent = this.i18nMsg('EDIT')
 
-          const originalModel = monaco.editor.createModel(this.previousContent, `text/${this.bgData.lang}`)
-          const modifiedModel = monaco.editor.createModel(this.currentContent, `text/${this.bgData.lang}`)
-
           this.diffEditor.setModel({
-            original: originalModel,
-            modified: modifiedModel
+            original: monaco.editor.createModel(this.previousContent, `text/${this.bgData.lang}`),
+            modified: monaco.editor.createModel(this.currentContent, `text/${this.bgData.lang}`)
           })
         } else {
           this.editorVisible = true
@@ -167,6 +164,30 @@ class FMEditor {
 
     this.elems.get('publish').addEventListener('click', async () => {
       if (this.currentContent !== this.previousContent && this.bgData.mode !== 'inspect') {
+        const content = await this.getPageContent(true)
+        if (content !== this.previousContent) {
+          this.previousContent = content
+          if (!this.editorVisible) {
+            this.diffEditor.setModel({
+              original: monaco.editor.createModel(this.previousContent, `text/${this.bgData.lang}`),
+              modified: monaco.editor.createModel(this.currentContent, `text/${this.bgData.lang}`)
+            })
+          }
+          const dialog = await this.showDialog(
+            this.i18nMsg('EC_TITLE'),
+            this.i18nMsg('EC_DESC'),
+            [{
+              action: 'CANCEL',
+              text: this.i18nMsg('RESOLVE')
+            }, {
+              action: 'SAVE',
+              text: this.i18nMsg('IGNORE')
+            }]
+          )
+          if (dialog !== 'SAVE') {
+            return
+          }
+        }
         if (this.bgData.mode === 'editwarning') {
           const dialog = await this.showDialog(
             this.i18nMsg('EW_TITLE'),
@@ -175,15 +196,14 @@ class FMEditor {
               action: 'CANCEL',
               text: this.i18nMsg('CANCEL')
             }, {
-              action: 'PUBLISH',
-              text: this.i18nMsg('PUBLISH')
+              action: 'SAVE',
+              text: window.previousContent === '' ? this.i18nMsg('PUBLISH') : this.i18nMsg('SAVE')
             }]
           )
-          if (dialog !== 'PUBLISH') {
+          if (dialog !== 'SAVE') {
             return
           }
         }
-        // TODO: Check for edit conflicts
         browser.runtime.sendMessage({
           type: 'MAKE_EDIT:E->B',
           data: {
