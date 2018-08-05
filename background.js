@@ -119,9 +119,10 @@ async function getTranslations () {
     const response = await window.fetch('https://dev.wikia.com/wiki/MediaWiki:Custom-FANDOM-Monaco/i18n.json?action=raw')
     const text = await response.text()
 
-    // Regex author: https://dev.wikia.com/wiki/User:Dorumin (created for https://dev.wikia.com/wiki/MediaWiki:I18n-js/beta.js)
+    // Regex authors: https://dev.wikia.com/wiki/User:Dorumin and https://dev.wikia.com/wiki/User:OneTwoThreeFall
+    // Originally created for: https://dev.wikia.com/wiki/MediaWiki:I18n-js/beta.js
     // License: CC BY-SA
-    const json = JSON.parse(text.trim().replace(/("[^"]+")|\/\/[^\n]*|\/\*[\s\S]*?\*\//g, (m, s) => {
+    const json = JSON.parse(text.trim().replace(/("(?:\\.|[^"\n\\])+")|\/\/[^\n]*|\/\*[\s\S]*?\*\//g, (m, s) => {
       if (s) {
         return m
       }
