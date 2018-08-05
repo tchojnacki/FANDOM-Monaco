@@ -85,9 +85,9 @@ class FMEditor {
     })
     if (this.bgData.lang === 'javascript' && this.bgData.mode !== 'inspect') {
       this.linter.lint()
-      this.diffEditor = monaco.editor.createDiffEditor(this.elems.get('diff-container'))
     }
     if (this.bgData.mode !== 'inspect') {
+      this.diffEditor = monaco.editor.createDiffEditor(this.elems.get('diff-container'))
       this.editor.updateOptions({ readOnly: false })
     }
   }
@@ -148,8 +148,8 @@ class FMEditor {
           this.elems.get('diff').textContent = this.i18nMsg('EDIT')
 
           this.diffEditor.setModel({
-            original: monaco.editor.createModel(this.previousContent, `text/${this.bgData.lang}`),
-            modified: monaco.editor.createModel(this.currentContent, `text/${this.bgData.lang}`)
+            original: monaco.editor.createModel(this.previousContent, this.langModel),
+            modified: monaco.editor.createModel(this.currentContent, this.langModel)
           })
         } else {
           this.editorVisible = true
@@ -169,8 +169,8 @@ class FMEditor {
           this.previousContent = content
           if (!this.editorVisible) {
             this.diffEditor.setModel({
-              original: monaco.editor.createModel(this.previousContent, `text/${this.bgData.lang}`),
-              modified: monaco.editor.createModel(this.currentContent, `text/${this.bgData.lang}`)
+              original: monaco.editor.createModel(this.previousContent, this.langModel),
+              modified: monaco.editor.createModel(this.currentContent, this.langModel)
             })
           }
           const dialog = await this.showDialog(
@@ -225,6 +225,14 @@ class FMEditor {
 
   get editSummary () {
     return this.elems.get('summary').value
+  }
+
+  get langModel () {
+    if (this.bgData.lang === 'json') {
+      return 'application/json'
+    } else {
+      return `text/${this.bgData.lang}`
+    }
   }
 }
 
