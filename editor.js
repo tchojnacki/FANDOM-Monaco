@@ -1,8 +1,9 @@
 /* global monaco, browser, JSHINT */
 
 class FMEditor {
-  constructor () {
+  constructor (elements) {
     this.editorVisible = true
+    this.elems = elements
     FMEditor.instance = this
   }
 
@@ -30,12 +31,12 @@ class FMEditor {
   }
 
   setDocumentUp () {
-    document.getElementById('pagename').textContent = this.bgData.title
-    document.getElementById('pagename').setAttribute('href', this.bgData.url)
+    this.elems.get('pagename').textContent = this.bgData.title
+    this.elems.get('pagename').setAttribute('href', this.bgData.url)
     if (this.bgData.mode !== 'inspect') {
-      document.getElementById('diff').style.display = 'block'
-      document.getElementById('summary').style.display = 'inline-block'
-      document.getElementById('diff-container').style.display = 'block'
+      this.elems.get('diff').style.display = 'block'
+      this.elems.get('summary').style.display = 'inline-block'
+      this.elems.get('diff-container').style.display = 'block'
     }
   }
 
@@ -46,7 +47,7 @@ class FMEditor {
         'lib.d.ts'
       )
     }
-    this.editor = monaco.editor.create(document.getElementById('editor-container'), {
+    this.editor = monaco.editor.create(this.elems.get('editor-container'), {
       value: this.previousContent,
       language: this.bgData.lang,
       theme: 'vs-dark',
@@ -54,7 +55,7 @@ class FMEditor {
     })
     if (this.bgData.lang === 'javascript' && this.bgData.mode !== 'inspect') {
       this.lint()
-      this.diffEditor = monaco.editor.createDiffEditor(document.getElementById('diff-container'))
+      this.diffEditor = monaco.editor.createDiffEditor(this.elems.get('diff-container'))
     }
     if (this.bgData.mode !== 'inspect') {
       this.editor.updateOptions({ readOnly: false })
@@ -62,7 +63,7 @@ class FMEditor {
   }
 
   lint () {
-    JSHINT.jshint(this.editor.getValue(), {
+    JSHINT.jshint(this.currentContent, {
       esversion: 5,
       curly: true,
       eqeqeq: true,
@@ -91,32 +92,29 @@ class FMEditor {
   }
 
   hideSpinner () {
-    document.getElementsByClassName('overlay')[0].classList.add('invisible')
+    this.elems.get('overlay').classList.add('invisible')
     setTimeout(() => {
-      document.getElementsByClassName('spinner')[0].classList.add('hidden')
-      document.getElementsByClassName('dialog')[0].classList.remove('hidden')
+      this.elems.get('spinner').classList.add('hidden')
+      this.elems.get('dialog').classList.remove('hidden')
     }, 500)
   }
 
   showDialog (title, content, actions) {
     return new Promise((resolve) => {
-      const overlay = document.getElementsByClassName('overlay')[0]
-      const dialog = document.getElementsByClassName('dialog')[0]
-      const dialogActions = dialog.querySelector('.dialog-actions')
-      dialog.querySelector('.dialog-title').textContent = title
-      dialog.querySelector('.dialog-content').textContent = content
-      overlay.classList.remove('invisible')
+      this.elems.get('dialog-title').textContent = title
+      this.elems.get('dialog-content').textContent = content
+      this.elems.get('overlay').classList.remove('invisible')
 
-      dialogActions.innerHTML = ''
+      this.elems.get('dialog-actions').innerHTML = ''
       actions.forEach((a) => {
         const button = document.createElement('div')
         button.classList.add('dialog-button')
         button.textContent = a.text
         button.addEventListener('click', () => {
           resolve(a.action)
-          overlay.classList.add('invisible')
+          this.elems.get('overlay').classList.add('invisible')
         })
-        dialogActions.appendChild(button)
+        this.elems.get('dialog-actions').appendChild(button)
       })
     })
   }
@@ -131,25 +129,25 @@ class FMEditor {
 
     if (this.bgData.mode !== 'inspect') {
       this.editor.model.onDidChangeContent((event) => {
-        if (this.editor.getValue() !== this.previousContent) {
-          document.getElementById('publish').textContent = this.previousContent === '' ? 'Publikuj' : 'Zapisz'
+        if (this.currentContent !== this.previousContent) {
+          this.elems.get('publish').textContent = this.previousContent === '' ? 'Publikuj' : 'Zapisz'
         } else {
-          document.getElementById('publish').textContent = 'Zamknij'
+          this.elems.get('publish').textContent = 'Zamknij'
         }
         if (this.bgData.lang === 'javascript') {
           this.lint()
         }
       })
 
-      document.getElementById('diff').addEventListener('click', async () => {
+      this.elems.get('diff').addEventListener('click', async () => {
         if (this.editorVisible) {
           this.editorVisible = false
-          document.getElementById('editor-container').style.setProperty('flex', '0')
-          document.getElementById('diff-container').style.setProperty('flex', '1')
-          document.getElementById('diff').textContent = 'Edytuj'
+          this.elems.get('editor-container').style.setProperty('flex', '0')
+          this.elems.get('diff-container').style.setProperty('flex', '1')
+          this.elems.get('diff').textContent = 'Edytuj'
 
           const originalModel = monaco.editor.createModel(this.previousContent, `text/${this.bgData.lang}`)
-          const modifiedModel = monaco.editor.createModel(this.editor.getValue(), `text/${this.bgData.lang}`)
+          const modifiedModel = monaco.editor.createModel(this.currentContent, `text/${this.bgData.lang}`)
 
           this.diffEditor.setModel({
             original: originalModel,
@@ -157,17 +155,17 @@ class FMEditor {
           })
         } else {
           this.editorVisible = true
-          document.getElementById('editor-container').style.setProperty('flex', '1')
-          document.getElementById('diff-container').style.setProperty('flex', '0')
-          document.getElementById('diff').textContent = 'Różnica'
+          this.elems.get('editor-container').style.setProperty('flex', '1')
+          this.elems.get('diff-container').style.setProperty('flex', '0')
+          this.elems.get('diff').textContent = 'Różnica'
         }
         this.editor.layout()
         this.diffEditor.layout()
       })
     }
 
-    document.getElementById('publish').addEventListener('click', async () => {
-      if (this.editor.getValue() !== this.previousContent && this.bgData.mode !== 'inspect') {
+    this.elems.get('publish').addEventListener('click', async () => {
+      if (this.currentContent !== this.previousContent && this.bgData.mode !== 'inspect') {
         if (this.bgData.mode === 'editwarning') {
           const dialog = await this.showDialog(
             'Nie jesteś administratorem',
@@ -188,8 +186,8 @@ class FMEditor {
         browser.runtime.sendMessage({
           type: 'MAKE_EDIT:E->B',
           data: {
-            text: this.editor.getValue(),
-            summary: document.getElementById('summary').value
+            text: this.currentContent,
+            summary: this.elems.get('summary').value
           }
         })
       } else {
@@ -199,8 +197,47 @@ class FMEditor {
       }
     })
   }
+
+  get currentContent () {
+    return this.editor.getValue()
+  }
+}
+
+class FMElements {
+  constructor (elementMap) {
+    this.elements = elementMap
+    this.cachedElements = {}
+    FMElements.instance = this
+  }
+
+  get (elem) {
+    if (this.elements[elem]) {
+      if (this.cachedElements[elem]) {
+        return this.cachedElements[elem]
+      } else {
+        const e = document.querySelector(this.elements[elem])
+        this.cachedElements[elem] = e
+        return e
+      }
+    } else {
+      throw new Error(`Element not available in the map: ${elem}`)
+    }
+  }
 }
 
 require(['vs/editor/editor.main'], async () => {
-  await new FMEditor().init()
+  await new FMEditor(new FMElements({
+    'pagename': '#pagename',
+    'summary': '#summary',
+    'publish': '#publish',
+    'diff': '#diff',
+    'diff-container': '#diff-container',
+    'editor-container': '#editor-container',
+    'overlay': '.overlay',
+    'spinner': '.spinner',
+    'dialog': '.dialog',
+    'dialog-title': '.dialog-title',
+    'dialog-content': '.dialog-content',
+    'dialog-actions': '.dialog-actions'
+  })).init()
 })
