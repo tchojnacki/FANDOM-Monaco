@@ -2,7 +2,7 @@
 window.i18n = {}
 window.i18nReady = false
 
-browser.runtime.onMessage.addListener(async (request) => {
+browser.runtime.onMessage.addListener(async (request, sender) => {
   switch (request.type) {
     case 'OPEN_EDITOR:C->B':
       if (window.editor) {
@@ -10,6 +10,13 @@ browser.runtime.onMessage.addListener(async (request) => {
           const win = await browser.windows.get(window.editor.id)
           if (win) {
             // Editor is already open
+            browser.tabs.sendMessage(sender.tab.id, {
+              type: 'DISPLAY_BANNER:B->C',
+              data: {
+                text: window.msg('ALREADY_OPEN', request.data.i18n),
+                timeout: 2000
+              }
+            })
             return
           }
         } catch (e) {}
@@ -34,9 +41,10 @@ browser.runtime.onMessage.addListener(async (request) => {
           browser.tabs.sendMessage(foundTabs[0], { // Only send the message to one content script
             type: 'MAKE_EDIT:B->C',
             data: {
-              text: request.data.text,
-              summary: request.data.summary,
-              title: window.data.title
+              ...request.data,
+              title: window.data.title,
+              requesterror: window.msg('REQUEST_ERROR', window.data.i18n),
+              networkerror: window.msg('NETWORK_ERROR', window.data.i18n)
             }
           })
         } else { // Tab got closed, open a new window
@@ -49,9 +57,10 @@ browser.runtime.onMessage.addListener(async (request) => {
                 browser.tabs.sendMessage(newTab.id, {
                   type: 'MAKE_EDIT:B->C',
                   data: {
-                    text: request.data.text,
-                    summary: request.data.summary,
-                    title: window.data.title
+                    ...request.data,
+                    title: window.data.title,
+                    requesterror: window.msg('REQUEST_ERROR', window.data.i18n),
+                    networkerror: window.msg('NETWORK_ERROR', window.data.i18n)
                   }
                 })
               }
@@ -66,7 +75,7 @@ browser.runtime.onMessage.addListener(async (request) => {
   }
 })
 
-/* window.msg = (msg, lang) => {
+window.msg = (msg, lang) => {
   if (lang && msg && window.i18nReady && window.i18n[lang] && window.i18n[lang][msg]) {
     return window.i18n[lang][msg]
   }
@@ -77,7 +86,7 @@ browser.runtime.onMessage.addListener(async (request) => {
     return `[${msg}]`
   }
   return ''
-} */
+}
 
 async function getTranslations () {
   try {

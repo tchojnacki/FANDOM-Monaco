@@ -8,11 +8,21 @@
   document.head.appendChild(s)
 
   browser.runtime.onMessage.addListener((request) => {
-    if (request.type === 'MAKE_EDIT:B->C') {
-      window.postMessage({
-        type: 'MAKE_EDIT:C->P',
-        data: request.data
-      }, window.location.origin)
+    if (request.type) {
+      switch (request.type) {
+        case 'MAKE_EDIT:B->C':
+          window.postMessage({
+            type: 'MAKE_EDIT:C->P',
+            data: request.data
+          }, window.location.origin)
+          break
+        case 'DISPLAY_BANNER:B->C':
+          window.postMessage({
+            type: 'DISPLAY_BANNER:C->P',
+            data: request.data
+          }, window.location.origin)
+          break
+      }
     }
   })
 
