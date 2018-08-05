@@ -1,4 +1,7 @@
 /* global browser */
+window.i18n = {}
+window.i18nReady = false
+
 browser.runtime.onMessage.addListener(async (request) => {
   switch (request.type) {
     case 'OPEN_EDITOR:C->B':
@@ -62,3 +65,40 @@ browser.runtime.onMessage.addListener(async (request) => {
       break
   }
 })
+
+/* window.msg = (msg, lang) => {
+  if (lang && msg && window.i18nReady && window.i18n[lang] && window.i18n[lang][msg]) {
+    return window.i18n[lang][msg]
+  }
+  if (msg && window.i18nReady && window.i18n.en && window.i18n.en[msg]) {
+    return window.i18n.en[msg]
+  }
+  if (msg) {
+    return `[${msg}]`
+  }
+  return ''
+} */
+
+async function getTranslations () {
+  try {
+    const response = await window.fetch('https://dev.wikia.com/wiki/MediaWiki:Custom-FANDOM-Monaco/i18n.json?action=raw')
+    const text = await response.text()
+
+    // Regex author: https://dev.wikia.com/wiki/User:Dorumin (created for https://dev.wikia.com/wiki/MediaWiki:I18n-js/beta.js)
+    // License: CC BY-SA
+    const json = JSON.parse(text.trim().replace(/("[^"]+")|\/\/[^\n]*|\/\*[\s\S]*?\*\//g, (m, s) => {
+      if (s) {
+        return m
+      }
+      return ''
+    }))
+    window.i18n = json
+    window.i18nReady = true
+  } catch (e) {
+    console.error('Could not fetch i18n JSON.')
+    window.i18n = {}
+  }
+  return window.i18n
+}
+
+getTranslations()
