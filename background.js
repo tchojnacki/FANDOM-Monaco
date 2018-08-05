@@ -2,7 +2,7 @@
 window.i18n = {}
 window.i18nReady = false
 
-browser.runtime.onMessage.addListener(async (request) => {
+browser.runtime.onMessage.addListener(async (request, sender) => {
   switch (request.type) {
     case 'OPEN_EDITOR:C->B':
       if (window.editor) {
@@ -10,6 +10,13 @@ browser.runtime.onMessage.addListener(async (request) => {
           const win = await browser.windows.get(window.editor.id)
           if (win) {
             // Editor is already open
+            browser.tabs.sendMessage(sender.tab.id, {
+              type: 'DISPLAY_BANNER:B->C',
+              data: {
+                text: window.msg('ALREADY_OPEN', request.data.i18n),
+                timeout: 2000
+              }
+            })
             return
           }
         } catch (e) {}
@@ -34,26 +41,54 @@ browser.runtime.onMessage.addListener(async (request) => {
           browser.tabs.sendMessage(foundTabs[0], { // Only send the message to one content script
             type: 'MAKE_EDIT:B->C',
             data: {
-              text: request.data.text,
-              summary: request.data.summary,
-              title: window.data.title
+              ...request.data,
+              title: window.data.title,
+              requesterror: window.msg('REQUEST_ERROR', window.data.i18n),
+              networkerror: window.msg('NETWORK_ERROR', window.data.i18n)
+            }
+          })
+          browser.tabs.onUpdated.addListener(function listener (tabId, info) {
+            if (info.status === 'complete' && tabId === foundTabs[0]) { // Wait until the tab is loaded
+              browser.tabs.onUpdated.removeListener(listener)
+              browser.tabs.sendMessage(foundTabs[0], {
+                type: 'DISPLAY_BANNER:B->C',
+                data: {
+                  text: window.msg('EDIT_SUCCESS', window.data.i18n),
+                  type: 'confirm',
+                  timeout: 2000
+                }
+              })
             }
           })
         } else { // Tab got closed, open a new window
           browser.tabs.create({
             url: window.data.url
           }, async (newTab) => {
+            let alreadyOpened = false
             browser.tabs.onUpdated.addListener(function listener (tabId, info) {
               if (info.status === 'complete' && tabId === newTab.id) { // Wait until the tab is loaded
-                browser.tabs.onUpdated.removeListener(listener)
-                browser.tabs.sendMessage(newTab.id, {
-                  type: 'MAKE_EDIT:B->C',
-                  data: {
-                    text: request.data.text,
-                    summary: request.data.summary,
-                    title: window.data.title
-                  }
-                })
+                if (alreadyOpened) {
+                  browser.tabs.onUpdated.removeListener(listener)
+                  browser.tabs.sendMessage(newTab.id, {
+                    type: 'DISPLAY_BANNER:B->C',
+                    data: {
+                      text: window.msg('EDIT_SUCCESS', window.data.i18n),
+                      type: 'confirm',
+                      timeout: 2000
+                    }
+                  })
+                } else {
+                  alreadyOpened = true
+                  browser.tabs.sendMessage(newTab.id, {
+                    type: 'MAKE_EDIT:B->C',
+                    data: {
+                      ...request.data,
+                      title: window.data.title,
+                      requesterror: window.msg('REQUEST_ERROR', window.data.i18n),
+                      networkerror: window.msg('NETWORK_ERROR', window.data.i18n)
+                    }
+                  })
+                }
               }
             })
           })
@@ -66,7 +101,7 @@ browser.runtime.onMessage.addListener(async (request) => {
   }
 })
 
-/* window.msg = (msg, lang) => {
+window.msg = (msg, lang) => {
   if (lang && msg && window.i18nReady && window.i18n[lang] && window.i18n[lang][msg]) {
     return window.i18n[lang][msg]
   }
@@ -77,16 +112,17 @@ browser.runtime.onMessage.addListener(async (request) => {
     return `[${msg}]`
   }
   return ''
-} */
+}
 
 async function getTranslations () {
   try {
     const response = await window.fetch('https://dev.wikia.com/wiki/MediaWiki:Custom-FANDOM-Monaco/i18n.json?action=raw')
     const text = await response.text()
 
-    // Regex author: https://dev.wikia.com/wiki/User:Dorumin (created for https://dev.wikia.com/wiki/MediaWiki:I18n-js/beta.js)
+    // Regex authors: https://dev.wikia.com/wiki/User:Dorumin and https://dev.wikia.com/wiki/User:OneTwoThreeFall
+    // Originally created for: https://dev.wikia.com/wiki/MediaWiki:I18n-js/beta.js
     // License: CC BY-SA
-    const json = JSON.parse(text.trim().replace(/("[^"]+")|\/\/[^\n]*|\/\*[\s\S]*?\*\//g, (m, s) => {
+    const json = JSON.parse(text.trim().replace(/("(?:\\.|[^"\n\\])+")|\/\/[^\n]*|\/\*[\s\S]*?\*\//g, (m, s) => {
       if (s) {
         return m
       }

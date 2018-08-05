@@ -64,7 +64,7 @@
               title: config.wgPageName,
               revid: config.wgCurRevisionId,
               api: window.location.origin + config.wgScriptPath,
-              url: encodeURI(window.location.origin + config.wgArticlePath.replace('$1', config.wgPageName)),
+              url: window.location.href.split(/\?|#/)[0],
               lang: lang,
               mode: mode,
               i18n: config.wgUserLanguage
@@ -77,16 +77,29 @@
   }
 
   window.addEventListener('message', (request) => {
-    if (request.source === window && request.data.type && request.data.type === 'MAKE_EDIT:C->P') {
-      new window.mw.Api().post({
-        action: 'edit',
-        title: request.data.data.title,
-        text: request.data.data.text,
-        summary: request.data.data.summary,
-        token: window.mw.user.tokens.get('editToken')
-      }).then(() => {
-        window.location.reload(true)
-      })
+    if (request.source === window && request.data.type) {
+      switch (request.data.type) {
+        case 'MAKE_EDIT:C->P':
+          new window.mw.Api().post({
+            action: 'edit',
+            title: request.data.data.title,
+            text: request.data.data.text,
+            summary: request.data.data.summary,
+            token: window.mw.user.tokens.get('editToken')
+          }).done((data) => {
+            if (data && data.edit && data.edit.result && data.edit.result === 'Success') {
+              window.location.reload()
+            } else {
+              new window.BannerNotification(request.data.data.requesterror || '[REQUEST_ERROR]', 'error').show()
+            }
+          }).fail(() => {
+            new window.BannerNotification(request.data.data.networkerror || '[NETWORK_ERROR]', 'error').show()
+          })
+          break
+        case 'DISPLAY_BANNER:C->P':
+          new window.BannerNotification(request.data.data.text || '', request.data.data.type || undefined, undefined, request.data.data.timeout || undefined).show()
+          break
+      }
     }
   }, false)
 })()
