@@ -85,9 +85,9 @@ class FMEditor {
     })
     if (this.bgData.lang === 'javascript' && this.bgData.mode !== 'inspect') {
       this.linter.lint()
-      this.diffEditor = monaco.editor.createDiffEditor(this.elems.get('diff-container'))
     }
     if (this.bgData.mode !== 'inspect') {
+      this.diffEditor = monaco.editor.createDiffEditor(this.elems.get('diff-container'))
       this.editor.updateOptions({ readOnly: false })
     }
   }
