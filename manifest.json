@@ -1,12 +1,13 @@
 {
   "applications": {
     "gecko": {
-      "id": "FANDOM-Monaco@tmkch.github.io"
+      "id": "FANDOM-Monaco@tmkch.github.io",
+      "update_url": "https://tmkch.github.io/FMU/updates.json"
     }
   },
   "manifest_version": 2,
   "name": "FANDOM Monaco",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Integrate Monaco Editor into FANDOM.",
   "background": {
     "scripts": [
