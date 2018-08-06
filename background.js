@@ -29,7 +29,7 @@ browser.runtime.onMessage.addListener(async (request, sender) => {
       break
     case 'MAKE_EDIT:E->B':
       browser.windows.remove(window.editor.id)
-      browser.windows.getAll({populate: true, windowTypes: ['normal']}, (wins) => { // Find all non-popup windows
+      browser.windows.getAll({populate: true, windowTypes: ['normal']}).then((wins) => { // Find all non-popup windows
         const foundTabs = []
         wins.forEach((win) => { // Find a tab
           const tab = win.tabs.find((tab) => window.data.url === tab.url.split(/\?|#/)[0]) // Find an open tab, ignore hash and params
@@ -63,7 +63,7 @@ browser.runtime.onMessage.addListener(async (request, sender) => {
         } else { // Tab got closed, open a new window
           browser.tabs.create({
             url: window.data.url
-          }, async (newTab) => {
+          }).then(async (newTab) => {
             let alreadyOpened = false
             browser.tabs.onUpdated.addListener(function listener (tabId, info) {
               if (info.status === 'complete' && tabId === newTab.id) { // Wait until the tab is loaded

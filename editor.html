@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <title>Monaco</title>
-    <link rel="stylesheet" type="text/css" href="editor.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik">
+    <link rel="stylesheet" type="text/css" href="other-browsers/normalize.css">
+    <link rel="stylesheet" type="text/css" href="editor.css">
   </head>
   <body>
     <div class="overlay">
@@ -27,6 +28,7 @@
       <div id="editor-container"></div>
       <div id="diff-container"></div>
     </div>
+    <script src="other-browsers/browser-polyfill.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.9.6/jshint.min.js"></script>
     <script src="vs/loader.js"></script>
     <script src="editor.js"></script>
