@@ -1440,7 +1440,6 @@ interface ArrayBufferConstructor {
     new(byteLength: number): ArrayBuffer;
     isView(arg: any): arg is ArrayBufferView;
 }
-const ArrayBuffer: ArrayBufferConstructor;
 
 interface ArrayBufferView {
     /**
@@ -1590,7 +1589,6 @@ interface DataView {
 interface DataViewConstructor {
     new(buffer: ArrayBufferLike, byteOffset?: number, byteLength?: number): DataView;
 }
-const DataView: DataViewConstructor;
 
 /**
   * A typed array of 8-bit integer values. The contents are initialized to 0. If the requested
@@ -1859,7 +1857,6 @@ interface Int8ArrayConstructor {
 
 
 }
-const Int8Array: Int8ArrayConstructor;
 
 /**
   * A typed array of 8-bit unsigned integer values. The contents are initialized to 0. If the
@@ -2128,7 +2125,6 @@ interface Uint8ArrayConstructor {
     from(arrayLike: ArrayLike<number>, mapfn?: (v: number, k: number) => number, thisArg?: any): Uint8Array;
 
 }
-const Uint8Array: Uint8ArrayConstructor;
 
 /**
   * A typed array of 8-bit unsigned integer (clamped) values. The contents are initialized to 0.
@@ -2396,7 +2392,6 @@ interface Uint8ClampedArrayConstructor {
       */
     from(arrayLike: ArrayLike<number>, mapfn?: (v: number, k: number) => number, thisArg?: any): Uint8ClampedArray;
 }
-const Uint8ClampedArray: Uint8ClampedArrayConstructor;
 
 /**
   * A typed array of 16-bit signed integer values. The contents are initialized to 0. If the
@@ -2665,7 +2660,6 @@ interface Int16ArrayConstructor {
 
 
 }
-const Int16Array: Int16ArrayConstructor;
 
 /**
   * A typed array of 16-bit unsigned integer values. The contents are initialized to 0. If the
@@ -2935,7 +2929,7 @@ interface Uint16ArrayConstructor {
 
 
 }
-const Uint16Array: Uint16ArrayConstructor;
+
 /**
   * A typed array of 32-bit signed integer values. The contents are initialized to 0. If the
   * requested number of bytes could not be allocated an exception is raised.
@@ -3203,7 +3197,6 @@ interface Int32ArrayConstructor {
     from(arrayLike: ArrayLike<number>, mapfn?: (v: number, k: number) => number, thisArg?: any): Int32Array;
 
 }
-const Int32Array: Int32ArrayConstructor;
 
 /**
   * A typed array of 32-bit unsigned integer values. The contents are initialized to 0. If the
@@ -3471,7 +3464,6 @@ interface Uint32ArrayConstructor {
     from(arrayLike: ArrayLike<number>, mapfn?: (v: number, k: number) => number, thisArg?: any): Uint32Array;
 
 }
-const Uint32Array: Uint32ArrayConstructor;
 
 /**
   * A typed array of 32-bit float values. The contents are initialized to 0. If the requested number
@@ -3741,7 +3733,6 @@ interface Float32ArrayConstructor {
 
 
 }
-const Float32Array: Float32ArrayConstructor;
 
 /**
   * A typed array of 64-bit float values. The contents are initialized to 0. If the requested
@@ -4010,13 +4001,12 @@ interface Float64ArrayConstructor {
     from(arrayLike: ArrayLike<number>, mapfn?: (v: number, k: number) => number, thisArg?: any): Float64Array;
 
 }
-const Float64Array: Float64ArrayConstructor;
 
 /////////////////////////////
 /// ECMAScript Internationalization API
 /////////////////////////////
 
-namespace Intl {
+declare namespace Intl {
     interface CollatorOptions {
         usage?: string;
         localeMatcher?: string;
@@ -17301,6 +17291,8 @@ interface webkitRTCPeerConnection extends RTCPeerConnection {
   removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+type EventListenerOrEventListenerObject = EventListener | EventListenerObject;
+
 interface DecodeErrorCallback {
   (error: DOMException): void;
 }
@@ -17593,9 +17585,9 @@ interface SVGElementTagNameMap {
 /** @deprecated Directly use HTMLElementTagNameMap or SVGElementTagNameMap as appropriate, instead. */
 interface ElementTagNameMap extends HTMLElementTagNameMap, SVGElementTagNameMap { }
 
-declare var Blob: typeof Blob;
-declare var URL: typeof URL;
-declare var URLSearchParams: typeof URLSearchParams;
+declare var Blob: Blob;
+declare var URL: URL;
+declare var URLSearchParams: URLSearchParams;
 declare var document: Document;
 declare var location: Location;
 declare var navigator: Navigator;
