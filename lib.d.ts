@@ -26208,7 +26208,7 @@ declare namespace mw {
  * Base library for MediaWiki.
  * Exposed globally as mediaWiki with mw as shortcut.
  */
-declare const mediawiki: typeof mw;
+declare const mediaWiki: typeof mw;
 
 declare function importArticle(module: { type: 'script' | 'style', article: string }): HTMLScriptElement[];
 declare function importArticles(module: { type: 'script' | 'style', articles: string[] }): HTMLScriptElement[];
@@ -26224,10 +26224,256 @@ declare function importStylesheet(page: string): HTMLScriptElement;
 declare function importStylesheetPage(page: string): HTMLScriptElement;
 /** @deprecated Use importArticle */
 declare function importStylesheetURI(url: string): HTMLScriptElement;
+/** @deprecated Use mw.config.get('debug') */
+declare const debug: any;
+/** @deprecated Use mw.config.get('wgAction') */
+declare const wgAction: string;
+/** @deprecated Use mw.config.get('wgActionPaths') */
+declare const wgActionPaths: object;
+/** @deprecated Use mw.config.get('wgAfterContentAndJS') */
+declare const wgAfterContentAndJS: any[];
+/** @deprecated Use mw.config.get('wgArticleId') */
+declare const wgArticleId: number;
+/** @deprecated Use mw.config.get('wgArticleInterlangList') */
+declare const wgArticleInterlangList: string[];
+/** @deprecated Use mw.config.get('wgArticlePath') */
+declare const wgArticlePath: string;
+/** @deprecated Use mw.config.get('wgArticleType') */
+declare const wgArticleType: string;
+/** @deprecated Use mw.config.get('wgAssetsManagerQuery') */
+declare const wgAssetsManagerQuery: string;
+/** @deprecated Use mw.config.get('wgAvailableSkins') */
+declare const wgAvailableSkins: object;
+/** @deprecated Use mw.config.get('wgBlankImgUrl') */
+declare const wgBlankImgUrl: string;
+/** @deprecated Use mw.config.get('wgBreakFrames') */
+declare const wgBreakFrames: boolean;
+/** @deprecated Use mw.config.get('wgCanonicalNamespace') */
+declare const wgCanonicalNamespace: string;
+/** @deprecated Use mw.config.get('wgCanonicalSpecialPageName') */
+declare const wgCanonicalSpecialPageName: string;
+/** @deprecated Use mw.config.get('wgCaseSensitiveNamespaces') */
+declare const wgCaseSensitiveNamespaces: any[];
+/** @deprecated Use mw.config.get('wgCatId') */
+declare const wgCatId: number;
+/** @deprecated Use mw.config.get('wgCategories') */
+declare const wgCategories: string[];
+/** @deprecated Use mw.config.get('wgCategoryTreePageCategoryOptions') */
+declare const wgCategoryTreePageCategoryOptions: string;
+/** @deprecated Use mw.config.get('wgCdnApiUrl') */
+declare const wgCdnApiUrl: string;
+/** @deprecated Use mw.config.get('wgCdnRootUrl') */
+declare const wgCdnRootUrl: string;
+/** @deprecated Use mw.config.get('wgCityId') */
+declare const wgCityId: string;
+/** @deprecated Use mw.config.get('wgContentLanguage') */
+declare const wgContentLanguage: string;
+/** @deprecated Use mw.config.get('wgContentReviewExtEnabled') */
+declare const wgContentReviewExtEnabled: boolean;
+/** @deprecated Use mw.config.get('wgContentReviewTestModeEnabled') */
+declare const wgContentReviewTestModeEnabled: boolean;
+/** @deprecated Use mw.config.get('wgCookieDomain') */
+declare const wgCookieDomain: string;
+/** @deprecated Use mw.config.get('wgCookiePath') */
+declare const wgCookiePath: string;
+/** @deprecated Use mw.config.get('wgCookiePrefix') */
+declare const wgCookiePrefix: string;
+/** @deprecated Use mw.config.get('wgCurRevisionId') */
+declare const wgCurRevisionId: number;
+/** @deprecated Use mw.config.get('wgDBname') */
+declare const wgDBname: string;
+/** @deprecated Use mw.config.get('wgDefaultDateFormat') */
+declare const wgDefaultDateFormat: string;
+/** @deprecated Use mw.config.get('wgDigitTransformTable') */
+declare const wgDigitTransformTable: string[];
+/** @deprecated Use mw.config.get('wgDisableAnonymousEditing') */
+declare const wgDisableAnonymousEditing: boolean | undefined;
+/** @deprecated Use mw.config.get('wgDiscussionsApiUrl') */
+declare const wgDiscussionsApiUrl: string;
+/** @deprecated Use mw.config.get('wgEnableAPI') */
+declare const wgEnableAPI: boolean;
+/** @deprecated Use mw.config.get('wgEnableLightboxExt') */
+declare const wgEnableLightboxExt: boolean;
+/** @deprecated Use mw.config.get('wgEnableMediaGalleryExt') */
+declare const wgEnableMediaGalleryExt: boolean;
+/** @deprecated Use mw.config.get('wgEnableNewAuthModal') */
+declare const wgEnableNewAuthModal: boolean;
+/** @deprecated Use mw.config.get('wgEnablePortableInfoboxBuilderInVE') */
+declare const wgEnablePortableInfoboxBuilderInVE: boolean;
+/** @deprecated Use mw.config.get('wgEnablePortableInfoboxEuropaTheme') */
+declare const wgEnablePortableInfoboxEuropaTheme: boolean;
+/** @deprecated Use mw.config.get('wgEnableVisualEditorUI') */
+declare const wgEnableVisualEditorUI: boolean;
+/** @deprecated Use mw.config.get('wgEnableWikiaBarAds') */
+declare const wgEnableWikiaBarAds: boolean;
+/** @deprecated Use mw.config.get('wgEnableWikiaBarExt') */
+declare const wgEnableWikiaBarExt: boolean;
+/** @deprecated Use mw.config.get('wgEnableWikiaFollowedPages') */
+declare const wgEnableWikiaFollowedPages: boolean;
+/** @deprecated Use mw.config.get('wgEnableWikiaInteractiveMaps') */
+declare const wgEnableWikiaInteractiveMaps: boolean;
+/** @deprecated Use mw.config.get('wgEnableWikiaPhotoGalleryExt') */
+declare const wgEnableWikiaPhotoGalleryExt: boolean;
+/** @deprecated Use mw.config.get('wgEnableWriteAPI') */
+declare const wgEnableWriteAPI: boolean;
+/** @deprecated Use mw.config.get('wgExtensionAssetsPath') */
+declare const wgExtensionAssetsPath: string;
+/** @deprecated Use mw.config.get('wgExtensionsPath') */
+declare const wgExtensionsPath: string;
+/** @deprecated Use mw.config.get('wgFileCanRotate') */
+declare const wgFileCanRotate: boolean;
+/** @deprecated Use mw.config.get('wgFileExtensions') */
+declare const wgFileExtensions: string[];
+/** @deprecated Use mw.config.get('wgFlowTrackingFlows') */
+declare const wgFlowTrackingFlows: object;
+/** @deprecated Use mw.config.get('wgFollowedPagesPagerLimit') */
+declare const wgFollowedPagesPagerLimit: number;
+/** @deprecated Use mw.config.get('wgFollowedPagesPagerLimitAjax') */
+declare const wgFollowedPagesPagerLimitAjax: number;
+/** @deprecated Use mw.config.get('wgFormattedNamespaces') */
+declare const wgFormattedNamespaces: object;
+/** @deprecated Use mw.config.get('wgGAUserIdHash') */
+declare const wgGAUserIdHash: string;
+/** @deprecated Use mw.config.get('wgGaHasAds') */
+declare const wgGaHasAds: true;
+/** @deprecated Use mw.config.get('wgGlobalShortcutsLoaded') */
+declare const wgGlobalShortcutsLoaded: true;
+/** @deprecated Use mw.config.get('wgIsArticle') */
+declare const wgIsArticle: true;
+/** @deprecated Use mw.config.get('wgIsGASpecialWiki') */
+declare const wgIsGASpecialWiki: true;
+/** @deprecated Use mw.config.get('wgJSMessagesCB') */
+declare const wgJSMessagesCB: string;
+/** @deprecated Use mw.config.get('wgLegalTitleChars') */
+declare const wgLegalTitleChars: string;
+/** @deprecated Use mw.config.get('wgLoadScript') */
+declare const wgLoadScript: string;
+/** @deprecated Use mw.config.get('wgMWrevId') */
+declare const wgMWrevId: boolean;
+/** @deprecated Use mw.config.get('wgMainPageTitle') */
+declare const wgMainPageTitle: string;
+/** @deprecated Use mw.config.get('wgMainpage') */
+declare const wgMainpage: string;
+/** @deprecated Use mw.config.get('wgMaxUploadSize') */
+declare const wgMaxUploadSize: number;
+/** @deprecated Use mw.config.get('wgMessages') */
+declare const wgMessages: object;
+/** @deprecated Use mw.config.get('wgMinimalPasswordLength') */
+declare const wgMinimalPasswordLength: number;
+/** @deprecated Use mw.config.get('wgMonthNames') */
+declare const wgMonthNames: string[];
+/** @deprecated Use mw.config.get('wgMonthNamesShort') */
+declare const wgMonthNamesShort: string[];
+/** @deprecated Use mw.config.get('wgNamespaceIds') */
+declare const wgNamespaceIds: object;
+/** @deprecated Use mw.config.get('wgNamespaceNumber') */
+declare const wgNamespaceNumber: number;
+/** @deprecated Use mw.config.get('wgNow') */
+declare const wgNow: Date;
+/** @deprecated Use mw.config.get('wgOasisBreakpoints') */
+declare const wgOasisBreakpoints: boolean;
+/** @deprecated Use mw.config.get('wgOasisGrid') */
+declare const wgOasisGrid: boolean;
+/** @deprecated Use mw.config.get('wgOasisResponsive') */
+declare const wgOasisResponsive: boolean;
+/** @deprecated Use mw.config.get('wgOnSiteNotificationsApiUrl') */
+declare const wgOnSiteNotificationsApiUrl: string;
+/** @deprecated Use mw.config.get('wgPageContentLanguage') */
+declare const wgPageContentLanguage: string;
+/** @deprecated Use mw.config.get('wgPageName') */
+declare const wgPageName: string;
+/** @deprecated Use mw.config.get('wgQualarooUrl') */
+declare const wgQualarooUrl: string;
+/** @deprecated Use mw.config.get('wgRecommendedVideoABTestPlaylist') */
+declare const wgRecommendedVideoABTestPlaylist: string;
+/** @deprecated Use mw.config.get('wgRelevantPageName') */
+declare const wgRelevantPageName: string;
+/** @deprecated Use mw.config.get('wgResourceBasePath') */
+declare const wgResourceBasePath: string;
+/** @deprecated Use mw.config.get('wgResourceLoaderMaxQueryLength') */
+declare const wgResourceLoaderMaxQueryLength: number;
+/** @deprecated Use mw.config.get('wgReviewedScriptsTimestamp') */
+declare const wgReviewedScriptsTimestamp: string;
+/** @deprecated Use mw.config.get('wgSassLoadedScss') */
+declare const wgSassLoadedScss: string[];
+/** @deprecated Use mw.config.get('wgSassParams') */
+declare const wgSassParams: object;
+/** @deprecated Use mw.config.get('wgScript') */
+declare const wgScript: string;
+/** @deprecated Use mw.config.get('wgScriptExtension') */
+declare const wgScriptExtension: string;
+/** @deprecated Use mw.config.get('wgScriptPath') */
+declare const wgScriptPath: string;
+/** @deprecated Use mw.config.get('wgScriptsTimestamp') */
+declare const wgScriptsTimestamp: string;
+/** @deprecated Use mw.config.get('wgSeparatorTransformTable') */
+declare const wgSeparatorTransformTable: string[];
+/** @deprecated Use mw.config.get('wgServer') */
+declare const wgServer: string;
+/** @deprecated Use mw.config.get('wgSiteName') */
+declare const wgSiteName: string;
+/** @deprecated Use mw.config.get('wgSitename') */
+declare const wgSitename: string;
+/** @deprecated Use mw.config.get('wgStyleVersion') */
+declare const wgStyleVersion: string;
+/** @deprecated Use mw.config.get('wgTitle') */
+declare const wgTitle: string;
+/** @deprecated Use mw.config.get('wgTrackID') */
+declare const wgTrackID: number;
+/** @deprecated Use mw.config.get('wgTransactionContext') */
+declare const wgTransactionContext: object;
+/** @deprecated Use mw.config.get('wgUrlProtocols') */
+declare const wgUrlProtocols: string;
+/** @deprecated Use mw.config.get('wgUseSiteJs') */
+declare const wgUseSiteJs: boolean;
+/** @deprecated Use mw.config.get('wgUserGroups') */
+declare const wgUserGroups: string[];
+/** @deprecated Use mw.config.get('wgUserLanguage') */
+declare const wgUserLanguage: string;
+/** @deprecated Use mw.config.get('wgUserName') */
+declare const wgUserName: string;
+/** @deprecated Use mw.config.get('wgVariantArticlePath') */
+declare const wgVariantArticlePath: boolean;
+/** @deprecated Use mw.config.get('wgVersion') */
+declare const wgVersion: string;
+/** @deprecated Use mw.config.get('wgVisualEditor') */
+declare const wgVisualEditor: object;
+/** @deprecated Use mw.config.get('wgVisualEditorConfig') */
+declare const wgVisualEditorConfig: object;
+/** @deprecated Use mw.config.get('wgVisualEditorPreferred') */
+declare const wgVisualEditorPreferred: boolean;
+/** @deprecated Use mw.config.get('wgWeppyConfig') */
+declare const wgWeppyConfig: object;
+/** @deprecated Use mw.config.get('wgWikiCategories') */
+declare const wgWikiCategories: string[];
+/** @deprecated Use mw.config.get('wgWikiVertical') */
+declare const wgWikiVertical: string;
+/** @deprecated Use mw.config.get('wgWikiaBarMainLanguages') */
+declare const wgWikiaBarMainLanguages: string[];
+/** @deprecated Use mw.config.get('wgWikiaBaseDomain') */
+declare const wgWikiaBaseDomain: string;
+/** @deprecated Use mw.config.get('wgWikiaBaseDomainRegex') */
+declare const wgWikiaBaseDomainRegex: string;
+/** @deprecated Use mw.config.get('wgWikiaChatProfileAvatarUrl') */
+declare const wgWikiaChatProfileAvatarUrl: string;
+/** @deprecated Use mw.config.get('wgWikiaChatUsers') */
+declare const wgWikiaChatUsers: string[];
+/** @deprecated Use mw.config.get('wgWikiaChatWindowFeatures') */
+declare const wgWikiaChatWindowFeatures: string;
+/** @deprecated Use mw.config.get('wgWikiaDOMReady') */
+declare const wgWikiaDOMReady: boolean;
+/** @deprecated Use mw.config.get('wgWikiaMaxNameChars') */
+declare const wgWikiaMaxNameChars: number;
+/** @deprecated Use mw.config.get('wgWikiaPageActions') */
+declare const wgWikiaPageActions: object;
+/** @deprecated Use mw.config.get('wgWikiaShortcutKeys') */
+declare const wgWikiaShortcutKeys: object;
 
 interface WikiaGlobals {
   mw: typeof mw;
+  mediaWiki: typeof mw;
   $: JQueryStatic;
+  jQuery: JQueryStatic;
   importArticle(module: { type: 'script' | 'style', article: string }): HTMLScriptElement[];
   importArticles(module: { type: 'script' | 'style', articles: string[] }): HTMLScriptElement[];
   /** @deprecated Use importArticle */
@@ -26242,4 +26488,248 @@ interface WikiaGlobals {
   importStylesheetPage(page: string): HTMLScriptElement;
   /** @deprecated Use importArticle */
   importStylesheetURI(url: string): HTMLScriptElement;
+  /** @deprecated Use mw.config.get('debug') */
+  debug: any;
+  /** @deprecated Use mw.config.get('wgAction') */
+  wgAction: any;
+  /** @deprecated Use mw.config.get('wgActionPaths') */
+  wgActionPaths: any;
+  /** @deprecated Use mw.config.get('wgAfterContentAndJS') */
+  wgAfterContentAndJS: any;
+  /** @deprecated Use mw.config.get('wgArticleId') */
+  wgArticleId: any;
+  /** @deprecated Use mw.config.get('wgArticleInterlangList') */
+  wgArticleInterlangList: any;
+  /** @deprecated Use mw.config.get('wgArticlePath') */
+  wgArticlePath: any;
+  /** @deprecated Use mw.config.get('wgArticleType') */
+  wgArticleType: any;
+  /** @deprecated Use mw.config.get('wgAssetsManagerQuery') */
+  wgAssetsManagerQuery: any;
+  /** @deprecated Use mw.config.get('wgAvailableSkins') */
+  wgAvailableSkins: any;
+  /** @deprecated Use mw.config.get('wgBlankImgUrl') */
+  wgBlankImgUrl: any;
+  /** @deprecated Use mw.config.get('wgBreakFrames') */
+  wgBreakFrames: any;
+  /** @deprecated Use mw.config.get('wgCanonicalNamespace') */
+  wgCanonicalNamespace: any;
+  /** @deprecated Use mw.config.get('wgCanonicalSpecialPageName') */
+  wgCanonicalSpecialPageName: any;
+  /** @deprecated Use mw.config.get('wgCaseSensitiveNamespaces') */
+  wgCaseSensitiveNamespaces: any;
+  /** @deprecated Use mw.config.get('wgCatId') */
+  wgCatId: any;
+  /** @deprecated Use mw.config.get('wgCategories') */
+  wgCategories: any;
+  /** @deprecated Use mw.config.get('wgCategoryTreePageCategoryOptions') */
+  wgCategoryTreePageCategoryOptions: any;
+  /** @deprecated Use mw.config.get('wgCdnApiUrl') */
+  wgCdnApiUrl: any;
+  /** @deprecated Use mw.config.get('wgCdnRootUrl') */
+  wgCdnRootUrl: any;
+  /** @deprecated Use mw.config.get('wgCityId') */
+  wgCityId: any;
+  /** @deprecated Use mw.config.get('wgContentLanguage') */
+  wgContentLanguage: any;
+  /** @deprecated Use mw.config.get('wgContentReviewExtEnabled') */
+  wgContentReviewExtEnabled: any;
+  /** @deprecated Use mw.config.get('wgContentReviewTestModeEnabled') */
+  wgContentReviewTestModeEnabled: any;
+  /** @deprecated Use mw.config.get('wgCookieDomain') */
+  wgCookieDomain: any;
+  /** @deprecated Use mw.config.get('wgCookiePath') */
+  wgCookiePath: any;
+  /** @deprecated Use mw.config.get('wgCookiePrefix') */
+  wgCookiePrefix: any;
+  /** @deprecated Use mw.config.get('wgCurRevisionId') */
+  wgCurRevisionId: any;
+  /** @deprecated Use mw.config.get('wgDBname') */
+  wgDBname: any;
+  /** @deprecated Use mw.config.get('wgDefaultDateFormat') */
+  wgDefaultDateFormat: any;
+  /** @deprecated Use mw.config.get('wgDigitTransformTable') */
+  wgDigitTransformTable: any;
+  /** @deprecated Use mw.config.get('wgDisableAnonymousEditing') */
+  wgDisableAnonymousEditing: any;
+  /** @deprecated Use mw.config.get('wgDiscussionsApiUrl') */
+  wgDiscussionsApiUrl: any;
+  /** @deprecated Use mw.config.get('wgEnableAPI') */
+  wgEnableAPI: any;
+  /** @deprecated Use mw.config.get('wgEnableLightboxExt') */
+  wgEnableLightboxExt: any;
+  /** @deprecated Use mw.config.get('wgEnableMediaGalleryExt') */
+  wgEnableMediaGalleryExt: any;
+  /** @deprecated Use mw.config.get('wgEnableNewAuthModal') */
+  wgEnableNewAuthModal: any;
+  /** @deprecated Use mw.config.get('wgEnablePortableInfoboxBuilderInVE') */
+  wgEnablePortableInfoboxBuilderInVE: any;
+  /** @deprecated Use mw.config.get('wgEnablePortableInfoboxEuropaTheme') */
+  wgEnablePortableInfoboxEuropaTheme: any;
+  /** @deprecated Use mw.config.get('wgEnableVisualEditorUI') */
+  wgEnableVisualEditorUI: any;
+  /** @deprecated Use mw.config.get('wgEnableWikiaBarAds') */
+  wgEnableWikiaBarAds: any;
+  /** @deprecated Use mw.config.get('wgEnableWikiaBarExt') */
+  wgEnableWikiaBarExt: any;
+  /** @deprecated Use mw.config.get('wgEnableWikiaFollowedPages') */
+  wgEnableWikiaFollowedPages: any;
+  /** @deprecated Use mw.config.get('wgEnableWikiaInteractiveMaps') */
+  wgEnableWikiaInteractiveMaps: any;
+  /** @deprecated Use mw.config.get('wgEnableWikiaPhotoGalleryExt') */
+  wgEnableWikiaPhotoGalleryExt: any;
+  /** @deprecated Use mw.config.get('wgEnableWriteAPI') */
+  wgEnableWriteAPI: any;
+  /** @deprecated Use mw.config.get('wgExtensionAssetsPath') */
+  wgExtensionAssetsPath: any;
+  /** @deprecated Use mw.config.get('wgExtensionsPath') */
+  wgExtensionsPath: any;
+  /** @deprecated Use mw.config.get('wgFileCanRotate') */
+  wgFileCanRotate: any;
+  /** @deprecated Use mw.config.get('wgFileExtensions') */
+  wgFileExtensions: any;
+  /** @deprecated Use mw.config.get('wgFlowTrackingFlows') */
+  wgFlowTrackingFlows: any;
+  /** @deprecated Use mw.config.get('wgFollowedPagesPagerLimit') */
+  wgFollowedPagesPagerLimit: any;
+  /** @deprecated Use mw.config.get('wgFollowedPagesPagerLimitAjax') */
+  wgFollowedPagesPagerLimitAjax: any;
+  /** @deprecated Use mw.config.get('wgFormattedNamespaces') */
+  wgFormattedNamespaces: any;
+  /** @deprecated Use mw.config.get('wgGAUserIdHash') */
+  wgGAUserIdHash: any;
+  /** @deprecated Use mw.config.get('wgGaHasAds') */
+  wgGaHasAds: any;
+  /** @deprecated Use mw.config.get('wgGlobalShortcutsLoaded') */
+  wgGlobalShortcutsLoaded: any;
+  /** @deprecated Use mw.config.get('wgIsArticle') */
+  wgIsArticle: any;
+  /** @deprecated Use mw.config.get('wgIsGASpecialWiki') */
+  wgIsGASpecialWiki: any;
+  /** @deprecated Use mw.config.get('wgJSMessagesCB') */
+  wgJSMessagesCB: any;
+  /** @deprecated Use mw.config.get('wgLegalTitleChars') */
+  wgLegalTitleChars: any;
+  /** @deprecated Use mw.config.get('wgLoadScript') */
+  wgLoadScript: any;
+  /** @deprecated Use mw.config.get('wgMWrevId') */
+  wgMWrevId: any;
+  /** @deprecated Use mw.config.get('wgMainPageTitle') */
+  wgMainPageTitle: any;
+  /** @deprecated Use mw.config.get('wgMainpage') */
+  wgMainpage: any;
+  /** @deprecated Use mw.config.get('wgMaxUploadSize') */
+  wgMaxUploadSize: any;
+  /** @deprecated Use mw.config.get('wgMessages') */
+  wgMessages: any;
+  /** @deprecated Use mw.config.get('wgMinimalPasswordLength') */
+  wgMinimalPasswordLength: any;
+  /** @deprecated Use mw.config.get('wgMonthNames') */
+  wgMonthNames: any;
+  /** @deprecated Use mw.config.get('wgMonthNamesShort') */
+  wgMonthNamesShort: any;
+  /** @deprecated Use mw.config.get('wgNamespaceIds') */
+  wgNamespaceIds: any;
+  /** @deprecated Use mw.config.get('wgNamespaceNumber') */
+  wgNamespaceNumber: any;
+  /** @deprecated Use mw.config.get('wgNow') */
+  wgNow: any;
+  /** @deprecated Use mw.config.get('wgOasisBreakpoints') */
+  wgOasisBreakpoints: any;
+  /** @deprecated Use mw.config.get('wgOasisGrid') */
+  wgOasisGrid: any;
+  /** @deprecated Use mw.config.get('wgOasisResponsive') */
+  wgOasisResponsive: any;
+  /** @deprecated Use mw.config.get('wgOnSiteNotificationsApiUrl') */
+  wgOnSiteNotificationsApiUrl: any;
+  /** @deprecated Use mw.config.get('wgPageContentLanguage') */
+  wgPageContentLanguage: any;
+  /** @deprecated Use mw.config.get('wgPageName') */
+  wgPageName: any;
+  /** @deprecated Use mw.config.get('wgQualarooUrl') */
+  wgQualarooUrl: any;
+  /** @deprecated Use mw.config.get('wgRecommendedVideoABTestPlaylist') */
+  wgRecommendedVideoABTestPlaylist: any;
+  /** @deprecated Use mw.config.get('wgRelevantPageName') */
+  wgRelevantPageName: any;
+  /** @deprecated Use mw.config.get('wgResourceBasePath') */
+  wgResourceBasePath: any;
+  /** @deprecated Use mw.config.get('wgResourceLoaderMaxQueryLength') */
+  wgResourceLoaderMaxQueryLength: any;
+  /** @deprecated Use mw.config.get('wgReviewedScriptsTimestamp') */
+  wgReviewedScriptsTimestamp: any;
+  /** @deprecated Use mw.config.get('wgSassLoadedScss') */
+  wgSassLoadedScss: any;
+  /** @deprecated Use mw.config.get('wgSassParams') */
+  wgSassParams: any;
+  /** @deprecated Use mw.config.get('wgScript') */
+  wgScript: any;
+  /** @deprecated Use mw.config.get('wgScriptExtension') */
+  wgScriptExtension: any;
+  /** @deprecated Use mw.config.get('wgScriptPath') */
+  wgScriptPath: any;
+  /** @deprecated Use mw.config.get('wgScriptsTimestamp') */
+  wgScriptsTimestamp: any;
+  /** @deprecated Use mw.config.get('wgSeparatorTransformTable') */
+  wgSeparatorTransformTable: any;
+  /** @deprecated Use mw.config.get('wgServer') */
+  wgServer: any;
+  /** @deprecated Use mw.config.get('wgSiteName') */
+  wgSiteName: any;
+  /** @deprecated Use mw.config.get('wgSitename') */
+  wgSitename: any;
+  /** @deprecated Use mw.config.get('wgStyleVersion') */
+  wgStyleVersion: any;
+  /** @deprecated Use mw.config.get('wgTitle') */
+  wgTitle: any;
+  /** @deprecated Use mw.config.get('wgTrackID') */
+  wgTrackID: any;
+  /** @deprecated Use mw.config.get('wgTransactionContext') */
+  wgTransactionContext: any;
+  /** @deprecated Use mw.config.get('wgUrlProtocols') */
+  wgUrlProtocols: any;
+  /** @deprecated Use mw.config.get('wgUseSiteJs') */
+  wgUseSiteJs: any;
+  /** @deprecated Use mw.config.get('wgUserGroups') */
+  wgUserGroups: any;
+  /** @deprecated Use mw.config.get('wgUserLanguage') */
+  wgUserLanguage: any;
+  /** @deprecated Use mw.config.get('wgUserName') */
+  wgUserName: any;
+  /** @deprecated Use mw.config.get('wgVariantArticlePath') */
+  wgVariantArticlePath: any;
+  /** @deprecated Use mw.config.get('wgVersion') */
+  wgVersion: any;
+  /** @deprecated Use mw.config.get('wgVisualEditor') */
+  wgVisualEditor: any;
+  /** @deprecated Use mw.config.get('wgVisualEditorConfig') */
+  wgVisualEditorConfig: any;
+  /** @deprecated Use mw.config.get('wgVisualEditorPreferred') */
+  wgVisualEditorPreferred: any;
+  /** @deprecated Use mw.config.get('wgWeppyConfig') */
+  wgWeppyConfig: any;
+  /** @deprecated Use mw.config.get('wgWikiCategories') */
+  wgWikiCategories: any;
+  /** @deprecated Use mw.config.get('wgWikiVertical') */
+  wgWikiVertical: any;
+  /** @deprecated Use mw.config.get('wgWikiaBarMainLanguages') */
+  wgWikiaBarMainLanguages: any;
+  /** @deprecated Use mw.config.get('wgWikiaBaseDomain') */
+  wgWikiaBaseDomain: any;
+  /** @deprecated Use mw.config.get('wgWikiaBaseDomainRegex') */
+  wgWikiaBaseDomainRegex: any;
+  /** @deprecated Use mw.config.get('wgWikiaChatProfileAvatarUrl') */
+  wgWikiaChatProfileAvatarUrl: any;
+  /** @deprecated Use mw.config.get('wgWikiaChatUsers') */
+  wgWikiaChatUsers: any;
+  /** @deprecated Use mw.config.get('wgWikiaChatWindowFeatures') */
+  wgWikiaChatWindowFeatures: any;
+  /** @deprecated Use mw.config.get('wgWikiaDOMReady') */
+  wgWikiaDOMReady: any;
+  /** @deprecated Use mw.config.get('wgWikiaMaxNameChars') */
+  wgWikiaMaxNameChars: any;
+  /** @deprecated Use mw.config.get('wgWikiaPageActions') */
+  wgWikiaPageActions: any;
+  /** @deprecated Use mw.config.get('wgWikiaShortcutKeys') */
+  wgWikiaShortcutKeys: any;
 }
