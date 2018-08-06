@@ -20,11 +20,8 @@ By using the extension you allow it make edits using your FANDOM account.
     4. Select the unpacked extension.
   * Permanent installation:
     1. Make sure you are using Developer, Nightly or ESR version of Firefox.
-    2. Download `.zip` with the [latest release](https://github.com/tmkch/FANDOM-Monaco/releases/latest).
-    3. Toggle the `xpinstall.signatures.required` preference in `about:config`.
-    4. Visit `about:addons`.
-    5. From the settings cog, open _Install Add-on From File_.
-    6. Select the extension.
+    2. Toggle the `xpinstall.signatures.required` preference in `about:config`.
+    3. Install `.xpi` with the [latest release](https://github.com/tmkch/FANDOM-Monaco/releases/latest).
 * Google Chrome:
   1. Download `.zip` with the [latest release](https://github.com/tmkch/FANDOM-Monaco/releases/latest) and unpack it.
   2. Visit `chrome://extensions`.
