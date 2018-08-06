@@ -14,19 +14,19 @@ By using the extension you allow it make edits using your FANDOM account.
 ## Installation
 * Mozilla Firefox:
   * Temporary installation:
-    1. Download `.zip` with the latest release and unpack it.
+    1. Download `.zip` with the [latest release](releases/latest) and unpack it.
     2. Visit `about:debugging`.
     3. Open _Load Temporary Add-on_.
     4. Select the unpacked extension.
   * Permanent installation:
     1. Make sure you are using Developer, Nightly or ESR version of Firefox.
-    2. Download `.zip` with the latest release.
+    2. Download `.zip` with the [latest release](releases/latest).
     3. Toggle the `xpinstall.signatures.required` preference in `about:config`.
     4. Visit `about:addons`.
     5. From the settings cog, open _Install Add-on From File_.
     6. Select the extension.
 * Google Chrome:
-  1. Download `.zip` with the latest release and unpack it.
+  1. Download `.zip` with the [latest release](releases/latest) and unpack it.
   2. Visit `chrome://extensions`.
   3. Enable _Developer Mode_ in the top right corner.
   4. Click _Load unpacked_.
