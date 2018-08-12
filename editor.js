@@ -48,6 +48,9 @@ class FMEditor {
   }
 
   async getPageContent (newest) {
+    if (this.bgData.revid === 0) {
+      return ''
+    }
     const response = await window.fetch(`${this.bgData.api}/api.php?format=json&action=query&prop=revisions&rvprop=content&` + (newest ? `titles=${this.bgData.title}&cb=${new Date().getTime() / 1000}` : `revids=${this.bgData.revid}`))
     const json = await response.json()
     const content = json.query.pages[Object.keys(json.query.pages)[0]].revisions ? json.query.pages[Object.keys(json.query.pages)[0]].revisions[0]['*'] : ''
