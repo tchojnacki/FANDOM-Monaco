@@ -12,6 +12,7 @@
   const isCSS = config.wgPageName.endsWith('.css')
   const isLESS = config.wgPageName.endsWith('.less')
   const isJSON = config.wgPageName.endsWith('.json')
+  const isInfobox = config.wgNamespaceNumber === 10 && window.$('.template-classification-type-text[data-type="infobox"]').length === 1
   let lang = null
   let mode = 'inspect' // or 'edit' or 'editwarning'
   // Currently supported:
@@ -26,6 +27,8 @@
     lang = 'less'
   } else if (isJSON) {
     lang = 'json'
+  } else if (isInfobox) {
+    lang = 'xml'
   }
 
   if (config.wgNamespaceNumber === 2) { // User pages
@@ -43,6 +46,10 @@
       } else {
         mode = 'edit'
       }
+    }
+  } else if (config.wgNamespaceNumber === 10) {
+    if (canEditCurrent) {
+      mode = 'edit'
     }
   }
 
