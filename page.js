@@ -55,6 +55,7 @@
 
   if (lang !== null) {
     const editText = window.$('.page-header__contribution-buttons #ca-edit span').text()
+    const targetUrl = window.location.href.split(/\?|#/)[0]
     window.$('.page-header__contribution-buttons #ca-edit span').html(`${editText} (M)`)
     window.$('.page-header__contribution-buttons #ca-edit').attr('href', '#').attr('id', 'FandomMonaco').click((e) => {
       e.preventDefault()
@@ -64,7 +65,7 @@
           title: config.wgPageName,
           revid: config.wgCurRevisionId,
           api: window.location.origin + config.wgScriptPath,
-          url: window.location.href.split(/\?|#/)[0],
+          url: targetUrl,
           lang: lang,
           mode: mode,
           i18n: config.wgUserLanguage
@@ -76,7 +77,7 @@
       window.$('<li>').append(
         window.$('<a>', {
           'text': editText,
-          'href': `${window.location.href.split(/\?|#/)[0]}?action=edit`,
+          'href': `${targetUrl}?action=edit`,
           'id': 'ca-edit'
         })
       )
