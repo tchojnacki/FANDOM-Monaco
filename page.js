@@ -10,35 +10,36 @@
   const canEditCurrent = config.wgWikiaPageActions.find(a => a.id === 'page:Edit') !== undefined
   const isJS = config.wgPageName.endsWith('.js') || config.wgPageName.endsWith('.javascript')
   const isCSS = config.wgPageName.endsWith('.css')
+  const isLESS = config.wgPageName.endsWith('.less')
   const isJSON = config.wgPageName.endsWith('.json')
+  const isInfobox = config.wgNamespaceNumber === 10 && window.$('.template-classification-type-text[data-type="infobox"]').length === 1
   let lang = null
-  let mode = null // or 'inspect' or 'edit' or 'editwarning'
+  let mode = 'inspect' // or 'edit' or 'editwarning'
   // Currently supported:
   // local and global CSS and JS user pages
   // CSS and JS MW pages
+  // LESS and JSON pages
   if (isJS) {
     lang = 'javascript'
   } else if (isCSS) {
     lang = 'css'
+  } else if (isLESS) {
+    lang = 'less'
   } else if (isJSON) {
     lang = 'json'
+  } else if (isInfobox) {
+    lang = 'xml'
   }
 
   if (config.wgNamespaceNumber === 2) { // User pages
-    if (isJS || isCSS || isJSON) {
-      mode = 'inspect'
-    }
     if (canEditCurrent) { // User page owned (or is Staff)
-      if (canEditOtherUsers && !config.wgPageName.match(`:${config.wgUserName}\\/.*\\.(css|js)$`)) { // Is Staff on another user page
+      if (canEditOtherUsers && !config.wgPageName.match(`:${config.wgUserName}\\/.*\\.(js|javascript|css|less|json)$`)) { // Is Staff on another user page
         mode = 'editwarning'
       } else { // User page owned
         mode = 'edit'
       }
     }
   } else if (config.wgNamespaceNumber === 8) { // MW pages
-    if (isJS || isCSS || isJSON) {
-      mode = 'inspect'
-    }
     if (canEditCurrent) { // Has local or global editinterface
       if (hasGlobalEI && !hasLocalEI && !isDevWiki) { // Is editing using global editinterface
         mode = 'editwarning'
@@ -46,29 +47,38 @@
         mode = 'edit'
       }
     }
+  } else if (config.wgNamespaceNumber === 10) {
+    if (canEditCurrent) {
+      mode = 'edit'
+    }
   }
 
-  if (mode !== null && lang !== null) {
+  if (lang !== null) {
+    const editText = window.$('.page-header__contribution-buttons #ca-edit span').text()
+    const targetUrl = window.location.href.split(/\?|#/)[0]
+    window.$('.page-header__contribution-buttons #ca-edit span').html(`${editText} (M)`)
+    window.$('.page-header__contribution-buttons #ca-edit').attr('href', '#').attr('id', 'FandomMonaco').click((e) => {
+      e.preventDefault()
+      window.postMessage({
+        type: 'OPEN_EDITOR:P->C',
+        data: {
+          title: config.wgPageName,
+          revid: config.wgCurRevisionId,
+          api: window.location.origin + config.wgScriptPath,
+          url: targetUrl,
+          lang: lang,
+          mode: mode,
+          i18n: config.wgUserLanguage
+        }
+      }, window.location.origin)
+      document.activeElement.blur()
+    })
     window.$('.page-header__contribution-buttons .wds-list').prepend(
       window.$('<li>').append(
         window.$('<a>', {
-          'text': 'Monaco',
-          'href': '#',
-          'id': 'FandomMonaco'
-        }).click((e) => {
-          e.preventDefault()
-          window.postMessage({
-            type: 'OPEN_EDITOR:P->C',
-            data: {
-              title: config.wgPageName,
-              revid: config.wgCurRevisionId,
-              api: window.location.origin + config.wgScriptPath,
-              url: window.location.href.split(/\?|#/)[0],
-              lang: lang,
-              mode: mode,
-              i18n: config.wgUserLanguage
-            }
-          }, window.location.origin)
+          'text': editText,
+          'href': `${targetUrl}?action=edit`,
+          'id': 'ca-edit'
         })
       )
     )

@@ -1,13 +1,12 @@
 {
   "applications": {
     "gecko": {
-      "id": "FANDOM-Monaco@tmkch.github.io",
-      "update_url": "https://tmkch.github.io/FMU/updates.json"
+      "id": "FANDOM-Monaco@tmkch.github.io"
     }
   },
   "manifest_version": 2,
   "name": "FANDOM Monaco",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "Integrate Monaco Editor into FANDOM.",
   "background": {
     "scripts": [
@@ -17,7 +16,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.wikia.com/wiki/*"],
+      "matches": [
+        "*://*.wikia.com/wiki/*",
+        "*://*.fandom.com/wiki/*"
+      ],
       "js": [
         "other-browsers/browser-polyfill.js",
         "content.js"
@@ -28,6 +30,7 @@
   "content_security_policy": "script-src 'self' https://cdnjs.cloudflare.com; object-src 'self'",
   "permissions": [
     "*://*.wikia.com/*",
+    "*://*.fandom.com/*",
     "webRequest",
     "tabs"
   ]
