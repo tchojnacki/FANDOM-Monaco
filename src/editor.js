@@ -84,6 +84,9 @@ class FMEditor {
     if (this.bgData.theme) {
       if (typeof this.bgData.theme === 'string') {
         themeName = this.bgData.theme
+        if (['solarized-dark', 'solarized-light'].includes(themeName)) {
+          monaco.editor.defineTheme(themeName, await (await window.fetch(`themes/${themeName}.json`)).json())
+        }
       } else {
         monaco.editor.defineTheme('fm-custom', this.bgData.theme)
         themeName = 'fm-custom'
