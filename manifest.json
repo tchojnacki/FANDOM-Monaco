@@ -6,12 +6,12 @@
   },
   "manifest_version": 2,
   "name": "FANDOM Monaco",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Integrate Monaco Editor into FANDOM.",
   "background": {
     "scripts": [
-      "other-browsers/browser-polyfill.js",
-      "background.js"
+      "src/modules/browser-polyfill.js",
+      "src/background.js"
     ]
   },
   "content_scripts": [
@@ -21,13 +21,13 @@
         "*://*.fandom.com/wiki/*"
       ],
       "js": [
-        "other-browsers/browser-polyfill.js",
-        "content.js"
+        "src/modules/browser-polyfill.js",
+        "src/content.js"
       ]
     }
   ],
-  "web_accessible_resources": ["page.js"],
-  "content_security_policy": "script-src 'self' https://cdnjs.cloudflare.com; object-src 'self'",
+  "web_accessible_resources": ["src/page.js"],
+  "content_security_policy": "script-src 'self'; object-src 'self'",
   "permissions": [
     "*://*.wikia.com/*",
     "*://*.fandom.com/*",

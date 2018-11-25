@@ -11,11 +11,11 @@ class FMEditor {
   async init () {
     await this.getBackgroundData() // Now this.bgData exists
     await this.getI18n() // Now this.i18nMsg() can be used
-    this.setDocumentUp()
+    this.setDocumentUp() // Update using i18n
     this.previousContent = await this.getPageContent(this.bgData.revid === -1) // Always fetch newest version with revid === -1
     await this.setEditorsUp() // Now this.editor exists (and sometimes this.diffEditor)
-    this.hideSpinner()
-    this.createHandlers()
+    this.hideSpinner() // Loading complete
+    this.createHandlers() // Event handlers
     return this
   }
 
@@ -49,7 +49,7 @@ class FMEditor {
 
   async getPageContent (newest) {
     if (this.bgData.revid === 0) {
-      return ''
+      return '' // Page isn't created
     }
     const response = await window.fetch(`${this.bgData.api}/api.php?format=json&action=query&prop=revisions&rvprop=content&` + (newest ? `titles=${this.bgData.title}&cb=${new Date().getTime() / 1000}` : `revids=${this.bgData.revid}`))
     const json = await response.json()
@@ -150,6 +150,7 @@ class FMEditor {
           this.elems.get('diff-container').style.setProperty('flex', '1')
           this.elems.get('diff').textContent = this.i18nMsg('EDIT')
 
+          // Update diff editor
           this.diffEditor.setModel({
             original: monaco.editor.createModel(this.previousContent, this.langModel),
             modified: monaco.editor.createModel(this.currentContent, this.langModel)
@@ -171,6 +172,7 @@ class FMEditor {
         if (content !== this.previousContent) {
           this.previousContent = content
           if (!this.editorVisible) {
+            // Update diff editor
             this.diffEditor.setModel({
               original: monaco.editor.createModel(this.previousContent, this.langModel),
               modified: monaco.editor.createModel(this.currentContent, this.langModel)
@@ -187,7 +189,7 @@ class FMEditor {
               text: this.i18nMsg('IGNORE')
             }]
           )
-          if (dialog !== 'SAVE') {
+          if (dialog !== 'SAVE') { // User pressed RESOLVE
             return
           }
         }
@@ -203,12 +205,12 @@ class FMEditor {
               text: window.previousContent === '' ? this.i18nMsg('PUBLISH') : this.i18nMsg('SAVE')
             }]
           )
-          if (dialog !== 'SAVE') {
+          if (dialog !== 'SAVE') { // User pressed CANCEL
             return
           }
         }
         browser.runtime.sendMessage({
-          type: 'MAKE_EDIT:E->B',
+          type: 'MAKE_EDIT:E->B', // Message to background.js
           data: {
             text: this.currentContent,
             summary: this.editSummary
@@ -216,7 +218,7 @@ class FMEditor {
         })
       } else {
         browser.runtime.sendMessage({
-          type: 'CLOSE_EDITOR:E->B'
+          type: 'CLOSE_EDITOR:E->B' // Message to background.js
         })
       }
     })

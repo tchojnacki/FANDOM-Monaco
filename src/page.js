@@ -1,5 +1,5 @@
 (() => {
-  if (window.fandomMonacoLoaded) {
+  if (window.fandomMonacoLoaded) { // Only load the script once per page
     return
   }
   window.fandomMonacoLoaded = true
@@ -15,15 +15,10 @@
   const isCSS = config.wgPageName.endsWith('.css')
   const isLESS = config.wgPageName.endsWith('.less')
   const isJSON = config.wgPageName.endsWith('.json')
-  const isInfobox = config.wgNamespaceNumber === 10 && window.$('.template-classification-type-text[data-type="infobox"]').length === 1
-  const isNPI = config.wgNamespaceNumber === 10 && window.$('.templatedraft-module').length === 1 && window.$('.templatedraft-module [data-id="templatedraft-module-button-approve"]').length === 0
+  const isInfobox = config.wgNamespaceNumber === 10 && window.$('.template-classification-type-text[data-type="infobox"]').length === 1 // A template with "Infobox" type
+  const isNPI = config.wgNamespaceNumber === 10 && window.$('.templatedraft-module').length === 1 && window.$('.templatedraft-module [data-id="templatedraft-module-button-approve"]').length === 0 // A template containing "Convert this infobox" module
   let lang = null
   let mode = 'inspect' // or 'edit' or 'editwarning'
-  // Currently supported:
-  // local and global CSS and JS user pages
-  // CSS and JS MW pages
-  // LESS and JSON pages
-  // Portable Infobox pages
   if (isJS) {
     lang = 'javascript'
   } else if (isCSS) {
@@ -32,7 +27,7 @@
     lang = 'less'
   } else if (isJSON) {
     lang = 'json'
-  } else if (isInfobox && !isNPI) {
+  } else if (isInfobox && !isNPI) { // Only for Portable Infoboxes
     lang = 'xml'
   }
 
@@ -52,13 +47,14 @@
         mode = 'edit'
       }
     }
-  } else if (config.wgNamespaceNumber === 10) {
+  } else if (config.wgNamespaceNumber === 10) { // Templates
     if (canEditCurrent) {
       mode = 'edit'
     }
   }
 
   if (lang !== null) {
+    // Edit button (or View Source button)
     const initialElement = window.$('.page-header__contribution-buttons #ca-edit').length === 1 ? window.$('.page-header__contribution-buttons #ca-edit') : window.$('.page-header__contribution-buttons [href*="action=edit"]')
     if (initialElement.length === 0) {
       return
@@ -69,7 +65,7 @@
     initialElement.attr('href', '#').click((e) => {
       e.preventDefault()
       window.postMessage({
-        type: 'OPEN_EDITOR:P->C',
+        type: 'OPEN_EDITOR:P->C', // Message to content.js
         data: {
           title: config.wgPageName,
           revid: config.wgCurRevisionId,
@@ -82,6 +78,7 @@
       }, window.location.origin)
       document.activeElement.blur()
     })
+    // Keep the original button in a dropdown
     window.$('.page-header__contribution-buttons .wds-list').prepend(
       window.$('<li>').append(
         window.$('<a>', {
@@ -90,9 +87,11 @@
         })
       )
     )
+    // A hook that can be used by other scripts
     window.mw.hook('fandomMonaco.add').fire()
   }
 
+  // Create infobox draft from the rail module
   if (isNPI) {
     const initialElement = window.$('.templatedraft-module [href$="?action=edit&conversion=1"]')
     if (initialElement.length === 0) {
@@ -105,10 +104,10 @@
     targetElement.attr('href', '#').click((e) => {
       e.preventDefault()
       window.postMessage({
-        type: 'OPEN_EDITOR:P->C',
+        type: 'OPEN_EDITOR:P->C', // Message to content.js
         data: {
           title: pageName,
-          revid: -1,
+          revid: -1, // Newest revision
           api: window.location.origin + config.wgScriptPath,
           url: targetUrl,
           lang: 'xml',
@@ -120,6 +119,7 @@
     })
   }
 
+  // Create infobox draft in Special:Insights
   if (config.wgCanonicalSpecialPageName === 'Insights' && window.$('.insights-list[data-type="nonportableinfoboxes"]').length === 1) {
     window.$('.insights-list[data-type="nonportableinfoboxes"] a[href$="action=edit&conversion=1"]').each((_i, elem) => {
       const el = window.$(elem)
@@ -128,7 +128,7 @@
       el.clone().appendTo(el.parent()).text(buttonSuffix).click((e) => {
         e.preventDefault()
         window.postMessage({
-          type: 'OPEN_EDITOR:P->C',
+          type: 'OPEN_EDITOR:P->C', // Message to content.js
           data: {
             title: pageName,
             revid: -1,
@@ -144,7 +144,7 @@
     })
   }
 
-  window.addEventListener('message', (request) => {
+  window.addEventListener('message', (request) => { // Message from content.js
     if (request.source === window && request.data.type) {
       switch (request.data.type) {
         case 'MAKE_EDIT:C->P':
