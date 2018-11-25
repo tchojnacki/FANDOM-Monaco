@@ -13,12 +13,14 @@
   const isLESS = config.wgPageName.endsWith('.less')
   const isJSON = config.wgPageName.endsWith('.json')
   const isInfobox = config.wgNamespaceNumber === 10 && window.$('.template-classification-type-text[data-type="infobox"]').length === 1
+  const isNPI = config.wgNamespaceNumber === 10 && window.$('.templatedraft-module').length === 1
   let lang = null
   let mode = 'inspect' // or 'edit' or 'editwarning'
   // Currently supported:
   // local and global CSS and JS user pages
   // CSS and JS MW pages
   // LESS and JSON pages
+  // Portable Infobox pages
   if (isJS) {
     lang = 'javascript'
   } else if (isCSS) {
@@ -27,7 +29,7 @@
     lang = 'less'
   } else if (isJSON) {
     lang = 'json'
-  } else if (isInfobox) {
+  } else if (isInfobox && !isNPI) {
     lang = 'xml'
   }
 
