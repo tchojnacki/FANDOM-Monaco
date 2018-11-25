@@ -12,7 +12,7 @@ class FMEditor {
     await this.getBackgroundData() // Now this.bgData exists
     await this.getI18n() // Now this.i18nMsg() can be used
     this.setDocumentUp()
-    this.previousContent = await this.getPageContent()
+    this.previousContent = await this.getPageContent(this.bgData.revid === -1) // Always fetch newest version with revid === -1
     await this.setEditorsUp() // Now this.editor exists (and sometimes this.diffEditor)
     this.hideSpinner()
     this.createHandlers()

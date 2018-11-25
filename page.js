@@ -1,7 +1,9 @@
 (() => {
-  if (window.$('#FandomMonaco').length !== 0) {
+  if (window.fandomMonacoLoaded) {
     return
   }
+  window.fandomMonacoLoaded = true
+
   const config = window.mw.config.get(['wgPageName', 'wgCurRevisionId', 'wgScriptPath', 'wgArticlePath', 'wgUserName', 'wgUserLanguage', 'wgNamespaceNumber', 'wgUserGroups', 'wgCityId', 'wgWikiaPageActions'])
   const hasGlobalEI = ['content-volunteer', 'helper', 'util', 'staff', 'vanguard', 'vstf'].some(group => config.wgUserGroups.includes(group))
   const hasLocalEI = config.wgUserGroups.includes('sysop')
@@ -13,7 +15,7 @@
   const isLESS = config.wgPageName.endsWith('.less')
   const isJSON = config.wgPageName.endsWith('.json')
   const isInfobox = config.wgNamespaceNumber === 10 && window.$('.template-classification-type-text[data-type="infobox"]').length === 1
-  const isNPI = config.wgNamespaceNumber === 10 && window.$('.templatedraft-module').length === 1
+  const isNPI = config.wgNamespaceNumber === 10 && window.$('.templatedraft-module').length === 1 && window.$('.templatedraft-module [data-id="templatedraft-module-button-approve"]').length === 0
   let lang = null
   let mode = 'inspect' // or 'edit' or 'editwarning'
   // Currently supported:
@@ -56,10 +58,14 @@
   }
 
   if (lang !== null) {
-    const editText = window.$('.page-header__contribution-buttons #ca-edit span').text()
+    const initialElement = window.$('.page-header__contribution-buttons #ca-edit').length === 1 ? window.$('.page-header__contribution-buttons #ca-edit') : window.$('.page-header__contribution-buttons [href*="action=edit"]')
+    if (initialElement.length === 0) {
+      return
+    }
+    const editText = initialElement.find('span').text()
     const targetUrl = window.location.href.split(/\?|#/)[0]
-    window.$('.page-header__contribution-buttons #ca-edit span').html(`${editText} (M)`)
-    window.$('.page-header__contribution-buttons #ca-edit').attr('href', '#').attr('id', 'FandomMonaco').click((e) => {
+    initialElement.find('span').text(`${editText} (M)`)
+    initialElement.attr('href', '#').click((e) => {
       e.preventDefault()
       window.postMessage({
         type: 'OPEN_EDITOR:P->C',
@@ -79,12 +85,38 @@
       window.$('<li>').append(
         window.$('<a>', {
           'text': editText,
-          'href': `${targetUrl}?action=edit`,
-          'id': 'ca-edit'
+          'href': `${targetUrl}?action=edit`
         })
       )
     )
-    window.mw.hook('fandommonaco.add').fire()
+    window.mw.hook('fandomMonaco.add').fire()
+  }
+
+  if (isNPI) {
+    const initialElement = window.$('.templatedraft-module [href$="?action=edit&conversion=1"]')
+    if (initialElement.length === 0) {
+      return
+    }
+    const targetUrl = initialElement.attr('href').split(/\?|#/)[0]
+    const pageName = config.wgPageName + targetUrl.split(config.wgPageName)[1]
+    const targetElement = initialElement.clone().appendTo(initialElement.parent())
+    targetElement.find('.templatedraft-module-button').text(`${initialElement.text()} (M)`)
+    targetElement.attr('href', '#').click((e) => {
+      e.preventDefault()
+      window.postMessage({
+        type: 'OPEN_EDITOR:P->C',
+        data: {
+          title: pageName,
+          revid: -1,
+          api: window.location.origin + config.wgScriptPath,
+          url: targetUrl,
+          lang: 'xml',
+          mode: 'edit',
+          i18n: config.wgUserLanguage
+        }
+      }, window.location.origin)
+      document.activeElement.blur()
+    })
   }
 
   window.addEventListener('message', (request) => {
