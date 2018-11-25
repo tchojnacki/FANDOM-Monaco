@@ -1,8 +1,11 @@
 (() => {
-  if (window.$('#FandomMonaco').length !== 0) {
+  if (window.fandomMonacoLoaded) {
     return
   }
-  const config = window.mw.config.get(['wgPageName', 'wgCurRevisionId', 'wgScriptPath', 'wgArticlePath', 'wgUserName', 'wgUserLanguage', 'wgNamespaceNumber', 'wgUserGroups', 'wgCityId', 'wgWikiaPageActions'])
+  window.fandomMonacoLoaded = true
+
+  const buttonSuffix = '(M)'
+  const config = window.mw.config.get(['wgPageName', 'wgCurRevisionId', 'wgScriptPath', 'wgArticlePath', 'wgCanonicalSpecialPageName', 'wgUserName', 'wgUserLanguage', 'wgNamespaceNumber', 'wgUserGroups', 'wgCityId', 'wgWikiaPageActions'])
   const hasGlobalEI = ['content-volunteer', 'helper', 'util', 'staff', 'vanguard', 'vstf'].some(group => config.wgUserGroups.includes(group))
   const hasLocalEI = config.wgUserGroups.includes('sysop')
   const isDevWiki = config.wgCityId === '7931' // Dev Wiki shouldn't give a warning
@@ -13,12 +16,14 @@
   const isLESS = config.wgPageName.endsWith('.less')
   const isJSON = config.wgPageName.endsWith('.json')
   const isInfobox = config.wgNamespaceNumber === 10 && window.$('.template-classification-type-text[data-type="infobox"]').length === 1
+  const isNPI = config.wgNamespaceNumber === 10 && window.$('.templatedraft-module').length === 1 && window.$('.templatedraft-module [data-id="templatedraft-module-button-approve"]').length === 0
   let lang = null
   let mode = 'inspect' // or 'edit' or 'editwarning'
   // Currently supported:
   // local and global CSS and JS user pages
   // CSS and JS MW pages
   // LESS and JSON pages
+  // Portable Infobox pages
   if (isJS) {
     lang = 'javascript'
   } else if (isCSS) {
@@ -27,7 +32,7 @@
     lang = 'less'
   } else if (isJSON) {
     lang = 'json'
-  } else if (isInfobox) {
+  } else if (isInfobox && !isNPI) {
     lang = 'xml'
   }
 
@@ -54,10 +59,14 @@
   }
 
   if (lang !== null) {
-    const editText = window.$('.page-header__contribution-buttons #ca-edit span').text()
+    const initialElement = window.$('.page-header__contribution-buttons #ca-edit').length === 1 ? window.$('.page-header__contribution-buttons #ca-edit') : window.$('.page-header__contribution-buttons [href*="action=edit"]')
+    if (initialElement.length === 0) {
+      return
+    }
+    const editText = initialElement.find('span').text()
     const targetUrl = window.location.href.split(/\?|#/)[0]
-    window.$('.page-header__contribution-buttons #ca-edit span').html(`${editText} (M)`)
-    window.$('.page-header__contribution-buttons #ca-edit').attr('href', '#').attr('id', 'FandomMonaco').click((e) => {
+    initialElement.find('span').text(`${editText} ${buttonSuffix}`)
+    initialElement.attr('href', '#').click((e) => {
       e.preventDefault()
       window.postMessage({
         type: 'OPEN_EDITOR:P->C',
@@ -77,12 +86,62 @@
       window.$('<li>').append(
         window.$('<a>', {
           'text': editText,
-          'href': `${targetUrl}?action=edit`,
-          'id': 'ca-edit'
+          'href': `${targetUrl}?action=edit`
         })
       )
     )
-    window.mw.hook('fandommonaco.add').fire()
+    window.mw.hook('fandomMonaco.add').fire()
+  }
+
+  if (isNPI) {
+    const initialElement = window.$('.templatedraft-module [href$="?action=edit&conversion=1"]')
+    if (initialElement.length === 0) {
+      return
+    }
+    const targetUrl = initialElement.attr('href').split(/\?|#/)[0]
+    const pageName = config.wgPageName + targetUrl.split(config.wgPageName)[1]
+    const targetElement = initialElement.clone().appendTo(initialElement.parent())
+    targetElement.find('.templatedraft-module-button').text(`${initialElement.text()} ${buttonSuffix}`)
+    targetElement.attr('href', '#').click((e) => {
+      e.preventDefault()
+      window.postMessage({
+        type: 'OPEN_EDITOR:P->C',
+        data: {
+          title: pageName,
+          revid: -1,
+          api: window.location.origin + config.wgScriptPath,
+          url: targetUrl,
+          lang: 'xml',
+          mode: 'edit',
+          i18n: config.wgUserLanguage
+        }
+      }, window.location.origin)
+      document.activeElement.blur()
+    })
+  }
+
+  if (config.wgCanonicalSpecialPageName === 'Insights' && window.$('.insights-list[data-type="nonportableinfoboxes"]').length === 1) {
+    window.$('.insights-list[data-type="nonportableinfoboxes"] a[href$="action=edit&conversion=1"]').each((_i, elem) => {
+      const el = window.$(elem)
+      const targetUrl = el.attr('href').split(/\?|#/)[0]
+      const pageName = targetUrl.match(/^.*\/(.*?):(.*)$/)[1] + ':' + targetUrl.match(/^.*\/(.*?):(.*)$/)[2]
+      el.clone().appendTo(el.parent()).text(buttonSuffix).click((e) => {
+        e.preventDefault()
+        window.postMessage({
+          type: 'OPEN_EDITOR:P->C',
+          data: {
+            title: pageName,
+            revid: -1,
+            api: window.location.origin + config.wgScriptPath,
+            url: targetUrl,
+            lang: 'xml',
+            mode: 'edit',
+            i18n: config.wgUserLanguage
+          }
+        }, window.location.origin)
+        document.activeElement.blur()
+      })
+    })
   }
 
   window.addEventListener('message', (request) => {
