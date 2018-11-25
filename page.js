@@ -4,7 +4,8 @@
   }
   window.fandomMonacoLoaded = true
 
-  const config = window.mw.config.get(['wgPageName', 'wgCurRevisionId', 'wgScriptPath', 'wgArticlePath', 'wgUserName', 'wgUserLanguage', 'wgNamespaceNumber', 'wgUserGroups', 'wgCityId', 'wgWikiaPageActions'])
+  const buttonSuffix = '(M)'
+  const config = window.mw.config.get(['wgPageName', 'wgCurRevisionId', 'wgScriptPath', 'wgArticlePath', 'wgCanonicalSpecialPageName', 'wgUserName', 'wgUserLanguage', 'wgNamespaceNumber', 'wgUserGroups', 'wgCityId', 'wgWikiaPageActions'])
   const hasGlobalEI = ['content-volunteer', 'helper', 'util', 'staff', 'vanguard', 'vstf'].some(group => config.wgUserGroups.includes(group))
   const hasLocalEI = config.wgUserGroups.includes('sysop')
   const isDevWiki = config.wgCityId === '7931' // Dev Wiki shouldn't give a warning
@@ -64,7 +65,7 @@
     }
     const editText = initialElement.find('span').text()
     const targetUrl = window.location.href.split(/\?|#/)[0]
-    initialElement.find('span').text(`${editText} (M)`)
+    initialElement.find('span').text(`${editText} ${buttonSuffix}`)
     initialElement.attr('href', '#').click((e) => {
       e.preventDefault()
       window.postMessage({
@@ -100,7 +101,7 @@
     const targetUrl = initialElement.attr('href').split(/\?|#/)[0]
     const pageName = config.wgPageName + targetUrl.split(config.wgPageName)[1]
     const targetElement = initialElement.clone().appendTo(initialElement.parent())
-    targetElement.find('.templatedraft-module-button').text(`${initialElement.text()} (M)`)
+    targetElement.find('.templatedraft-module-button').text(`${initialElement.text()} ${buttonSuffix}`)
     targetElement.attr('href', '#').click((e) => {
       e.preventDefault()
       window.postMessage({
@@ -116,6 +117,30 @@
         }
       }, window.location.origin)
       document.activeElement.blur()
+    })
+  }
+
+  if (config.wgCanonicalSpecialPageName === 'Insights' && window.$('.insights-list[data-type="nonportableinfoboxes"]').length === 1) {
+    window.$('.insights-list[data-type="nonportableinfoboxes"] a[href$="action=edit&conversion=1"]').each((_i, elem) => {
+      const el = window.$(elem)
+      const targetUrl = el.attr('href').split(/\?|#/)[0]
+      const pageName = targetUrl.match(/^.*\/(.*?):(.*)$/)[1] + ':' + targetUrl.match(/^.*\/(.*?):(.*)$/)[2]
+      el.clone().appendTo(el.parent()).text(buttonSuffix).click((e) => {
+        e.preventDefault()
+        window.postMessage({
+          type: 'OPEN_EDITOR:P->C',
+          data: {
+            title: pageName,
+            revid: -1,
+            api: window.location.origin + config.wgScriptPath,
+            url: targetUrl,
+            lang: 'xml',
+            mode: 'edit',
+            i18n: config.wgUserLanguage
+          }
+        }, window.location.origin)
+        document.activeElement.blur()
+      })
     })
   }
 
