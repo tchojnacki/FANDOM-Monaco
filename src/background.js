@@ -24,7 +24,7 @@ browser.runtime.onMessage.addListener(async (request, sender) => {
       window.data = request.data
       window.editor = await browser.windows.create({
         type: 'popup',
-        url: browser.extension.getURL('editor.html')
+        url: browser.extension.getURL('src/editor.html')
       })
       break
     case 'MAKE_EDIT:E->B':
