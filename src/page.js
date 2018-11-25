@@ -6,6 +6,7 @@
 
   const buttonSuffix = '(M)'
   const config = window.mw.config.get(['wgPageName', 'wgCurRevisionId', 'wgScriptPath', 'wgArticlePath', 'wgCanonicalSpecialPageName', 'wgUserName', 'wgUserLanguage', 'wgNamespaceNumber', 'wgUserGroups', 'wgCityId', 'wgWikiaPageActions'])
+  const themeData = window.monacoThemeData || null
   const hasGlobalEI = ['content-volunteer', 'helper', 'util', 'staff', 'vanguard', 'vstf'].some(group => config.wgUserGroups.includes(group))
   const hasLocalEI = config.wgUserGroups.includes('sysop')
   const isDevWiki = config.wgCityId === '7931' // Dev Wiki shouldn't give a warning
@@ -73,7 +74,8 @@
           url: targetUrl,
           lang: lang,
           mode: mode,
-          i18n: config.wgUserLanguage
+          i18n: config.wgUserLanguage,
+          themeData: themeData
         }
       }, window.location.origin)
       document.activeElement.blur()
@@ -112,7 +114,8 @@
           url: targetUrl,
           lang: 'xml',
           mode: 'edit',
-          i18n: config.wgUserLanguage
+          i18n: config.wgUserLanguage,
+          themeData: themeData
         }
       }, window.location.origin)
       document.activeElement.blur()
@@ -136,7 +139,8 @@
             url: targetUrl,
             lang: 'xml',
             mode: 'edit',
-            i18n: config.wgUserLanguage
+            i18n: config.wgUserLanguage,
+            themeData: themeData
           }
         }, window.location.origin)
         document.activeElement.blur()
