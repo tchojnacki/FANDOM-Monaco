@@ -1,7 +1,5 @@
 # FANDOM-Monaco
-A browser add-on that lets you replace FANDOM's default [Ace Editor](https://ace.c9.io/) with [Monaco Editor](https://microsoft.github.io/monaco-editor/). Press the "Monaco" button inside the contribution buttons dropdown to open the editor.
-
-By using the extension you allow it make edits using your FANDOM account.
+A browser add-on that lets you replace FANDOM's default [Ace Editor](https://ace.c9.io/) with [Monaco Editor](https://microsoft.github.io/monaco-editor/).
 
 ## Supported browsers
 * Officially supported:
@@ -14,22 +12,28 @@ By using the extension you allow it make edits using your FANDOM account.
 ## Installation
 * Mozilla Firefox:
   * Temporary installation:
-    1. Download `.zip` from the [latest release page](https://github.com/tmkch/FANDOM-Monaco/releases/latest) and unpack it.
+    1. Download the zip file from the [latest release page](https://github.com/tmkch/FANDOM-Monaco/releases/latest) and unpack it.
     2. Visit `about:debugging`.
     3. Open _Load Temporary Add-on_.
     4. Select the unpacked extension.
   * Permanent installation:
     1. Make sure you are using Developer, Nightly or ESR version of Firefox.
     2. Toggle the `xpinstall.signatures.required` preference in `about:config`.
-    3. Install `.xpi` from the [latest release page](https://github.com/tmkch/FANDOM-Monaco/releases/latest).
+    3. Install the xpi file from the [latest release page](https://github.com/tmkch/FANDOM-Monaco/releases/latest).
 * Google Chrome:
-  1. Download `.zip` from the [latest release page](https://github.com/tmkch/FANDOM-Monaco/releases/latest) and unpack it.
+  1. Download the zip file from the [latest release page](https://github.com/tmkch/FANDOM-Monaco/releases/latest) and unpack it.
   2. Visit `chrome://extensions`.
   3. Enable _Developer Mode_ in the top right corner.
   4. Click _Load unpacked_.
   5. Select the unpacked extension.
 
-## Internationalization
+## Usage
+Press the _Edit (M)_ button to open the editor.
+
+By using the extension you allow it to make edits using your FANDOM account.
+
+## Contributing
+### Internationalization
 To edit internationalization for your language visit [I18nEdit/FANDOM-Monaco](https://dev.wikia.com/wiki/Special:BlankPage/I18nEdit/FANDOM-Monaco).
 
 ## Legal info
