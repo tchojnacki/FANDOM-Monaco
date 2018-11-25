@@ -81,9 +81,13 @@ class FMEditor {
       )
     }
     let themeName = 'vs-dark'
-    if (this.bgData.themeData) {
-      monaco.editor.defineTheme('fm-custom', this.bgData.themeData)
-      themeName = 'fm-custom'
+    if (this.bgData.theme) {
+      if (typeof this.bgData.theme === 'string') {
+        themeName = this.bgData.theme
+      } else {
+        monaco.editor.defineTheme('fm-custom', this.bgData.theme)
+        themeName = 'fm-custom'
+      }
     }
     this.editor = monaco.editor.create(this.elems.get('editor-container'), {
       value: this.previousContent,
