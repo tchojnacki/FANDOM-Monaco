@@ -6,7 +6,7 @@
   },
   "manifest_version": 2,
   "name": "FANDOM Monaco",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Integrate Monaco Editor into FANDOM.",
   "background": {
     "scripts": [
@@ -18,7 +18,7 @@
     {
       "matches": [
         "*://*.wikia.com/wiki/*",
-        "*://*.fandom.com/wiki/*"
+        "*://*.fandom.com/*"
       ],
       "js": [
         "src/modules/browser-polyfill.js",
