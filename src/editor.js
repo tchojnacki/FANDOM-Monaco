@@ -81,7 +81,8 @@ class FMEditor {
       )
     }
     if (this.bgData.lang === 'xml') {
-      monaco.languages.registerCompletionItemProvider('xml', new PIHandler(monaco).getCompletionProvider())
+      const handler = new PIHandler(monaco)
+      monaco.languages.registerCompletionItemProvider('xml', handler.getCompletionProvider())
     }
     let themeName = 'vs-dark'
     if (this.bgData.theme) {

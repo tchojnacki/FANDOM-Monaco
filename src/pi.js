@@ -33,8 +33,8 @@ class PIHandler { // eslint-disable-line no-unused-vars
           if (text.lastIndexOf(' ') > lastOpening) { // Attributes
             const currentTag = text.substring(lastOpening)
             const tagName = currentTag.substring(1, currentTag.indexOf(' '))
-            if (PIHandler.schema.tags[tagName] && PIHandler.schema.tags[tagName].attributes && (currentTag.match(/"/g) || []).length % 2 === 0) {
-              suggestions = PIHandler.schema.tags[tagName].attributes.filter(s => s.startsWith(text.substring(text.lastIndexOf(' ') + 1))).map(tag => this.tagToItem(tag, true))
+            if (PIHandler.schema.tags[tagName] && (currentTag.match(/"/g) || []).length % 2 === 0) {
+              suggestions = (PIHandler.schema.tags[tagName].attributes || []).filter(s => s.startsWith(text.substring(text.lastIndexOf(' ') + 1))).map(tag => this.tagToItem(tag, true))
             }
           } else if (text.lastIndexOf('/') > lastOpening) { // Closing tag
             suggestions = [this.tagToItem(lastTag)]
@@ -42,7 +42,7 @@ class PIHandler { // eslint-disable-line no-unused-vars
             if (outline.length === 0) {
               suggestions = PIHandler.schema.root.children
             } else if (PIHandler.schema.tags[lastTag]) {
-              suggestions = PIHandler.schema.tags[lastTag].children
+              suggestions = PIHandler.schema.tags[lastTag].children || []
             }
             suggestions = suggestions.filter(s => s.startsWith(text.substring(lastOpening + 1))).map(tag => this.tagToItem(tag))
           }
@@ -56,7 +56,8 @@ class PIHandler { // eslint-disable-line no-unused-vars
     return {
       label: tag,
       kind: isAttr ? this.monaco.languages.CompletionItemKind.Property : this.monaco.languages.CompletionItemKind.Field,
-      detail: isAttr ? 'attribute' : 'tag'
+      detail: isAttr ? 'attribute' : 'tag',
+      documentation: PIHandler.schema.tags[tag] ? (PIHandler.schema.tags[tag].documentation || null) : null
     }
   }
 }
@@ -68,31 +69,53 @@ PIHandler.schema = {
   tags: {
     infobox: {
       children: ['title', 'image', 'header', 'navigation', 'data', 'group', 'panel'],
-      attributes: ['theme', 'theme-source', 'layout', 'accent-color-source', 'accent-color-text-source', 'accent-color-default', 'accent-color-text-default']
+      attributes: ['theme', 'theme-source', 'layout', 'accent-color-source', 'accent-color-text-source', 'accent-color-default', 'accent-color-text-default'],
+      documentation: 'The <infobox> tag holds all others and delimits the scope of the infobox.'
     },
     title: {
       children: ['default', 'format'],
-      attributes: ['source']
+      attributes: ['source'],
+      documentation: 'The <title> tag states infobox title. Images used in <title> tags do not appear on mobile.'
     },
     data: {
       children: ['default', 'label', 'format'],
-      attributes: ['source', 'span', 'layout']
+      attributes: ['source', 'span', 'layout'],
+      documentation: 'The <data> tag is the standard key-value tag.'
+    },
+    label: {
+      documentation: 'The <label> tag can be used only inside other tags. Accepts wikitext.'
+    },
+    default: {
+      documentation: 'The <default> tag text is used when "source" data is not specified, can be used only inside other tags. Accepts wikitext.'
+    },
+    format: {
+      documentation: 'The <format> tag can be used only inside other tags. Accepts wikitext.'
     },
     image: {
       children: ['alt', 'caption', 'default'],
-      attributes: ['source']
+      attributes: ['source'],
+      documentation: 'The <image> tag is used to insert images or video inside an infobox. It can only be styled using the community\'s CSS, and cannot be manually resized. Images are normalized, such that [[File:Example.jpg]] and Example.jpg do the same thing. Multiple images can be passed by using a <gallery> tag.\n\nHere, the default tag is used to specify an image to be used when no image has been chosen on an article. For example, <default>Example.jpg</default>.'
     },
     alt: {
       children: ['default'],
-      attributes: ['source']
+      attributes: ['source'],
+      documentation: 'The <alt> tag can be used only inside <image> tag.'
     },
     caption: {
       children: ['default', 'format'],
-      attributes: ['source']
+      attributes: ['source'],
+      documentation: 'The <caption> tag can be used only inside <image> tag.'
     },
     group: {
       children: ['data', 'header', 'image', 'title', 'group', 'navigation', 'panel'],
-      attributes: ['layout', 'show', 'collapse', 'row-items']
+      attributes: ['layout', 'show', 'collapse', 'row-items'],
+      documentation: 'The <data> tag is used for grouping fields, can provide header for each group. A group won\'t be rendered (including any headers) if all fields are empty. However, if the show attribute is set to incomplete, it will render all of the group\'s fields if at least one field is not empty.'
+    },
+    header: {
+      documentation: 'The <header> tag denotes the beginning of a section or group of tags.'
+    },
+    navigation: {
+      documentation: 'The <navigation> tag is used for providing any wikitext.'
     },
     panel: {
       children: ['section']
