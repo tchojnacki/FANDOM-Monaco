@@ -1,4 +1,4 @@
-/* global monaco, browser, JSHINT */
+/* global monaco, browser, PIHandler, JSHINT */
 
 class FMEditor {
   constructor (elements, linter) {
@@ -79,6 +79,10 @@ class FMEditor {
         (await (await window.fetch('./lib.d.ts')).text()),
         'lib.d.ts'
       )
+    }
+    if (this.bgData.lang === 'xml') {
+      const handler = new PIHandler(monaco)
+      monaco.languages.registerCompletionItemProvider('xml', handler.getCompletionProvider())
     }
     let themeName = 'vs-dark'
     if (this.bgData.theme) {
