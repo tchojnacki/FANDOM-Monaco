@@ -18,6 +18,7 @@
   const isJSON = config.wgPageName.endsWith('.json')
   const isInfobox = config.wgNamespaceNumber === 10 && window.$('.template-classification-type-text[data-type="infobox"]').length === 1 // A template with "Infobox" type
   const isNPI = config.wgNamespaceNumber === 10 && window.$('.templatedraft-module').length === 1 && window.$('.templatedraft-module [data-id="templatedraft-module-button-approve"]').length === 0 // A template containing "Convert this infobox" module
+  const revid = window.mw.util.getParamValue('diff') || window.mw.util.getParamValue('oldid') || config.wgCurRevisionId
   let lang = null
   let mode = 'inspect' // or 'edit' or 'editwarning'
   if (isJS) {
@@ -69,7 +70,7 @@
         type: 'OPEN_EDITOR:P->C', // Message to content.js
         data: {
           title: config.wgPageName,
-          revid: config.wgCurRevisionId,
+          revid: revid,
           api: window.location.origin + config.wgScriptPath,
           url: targetUrl,
           lang: lang,
@@ -85,7 +86,7 @@
       window.$('<li>').append(
         window.$('<a>', {
           'text': editText,
-          'href': `${targetUrl}?action=edit`
+          'href': `${targetUrl}?action=edit${revid === config.wgCurRevisionId ? '' : `&oldid=${revid}`}`
         })
       )
     )
