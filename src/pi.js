@@ -55,7 +55,7 @@ class PIHandler { // eslint-disable-line no-unused-vars
   tagToItem (tag, isAttr) {
     return {
       label: tag,
-      kind: isAttr ? this.monaco.languages.CompletionItemKind.Property : this.monaco.languages.CompletionItemKind.Field,
+      kind: isAttr ? this.monaco.languages.CompletionItemKind.Field : this.monaco.languages.CompletionItemKind.Class,
       detail: isAttr ? 'attribute' : 'tag',
       documentation: PIHandler.schema.tags[tag] ? (PIHandler.schema.tags[tag].documentation || null) : null
     }
