@@ -69,17 +69,17 @@ PIHandler.schema = {
   tags: {
     infobox: {
       children: ['title', 'image', 'header', 'navigation', 'data', 'group', 'panel'],
-      attributes: ['theme', 'theme-source', 'layout', 'accent-color-source', 'accent-color-text-source', 'accent-color-default', 'accent-color-text-default'],
+      attributes: ['theme', 'theme-source', 'type', 'accent-color-source', 'accent-color-default', 'accent-color-text-source', 'accent-color-text-default', 'layout', 'name'],
       documentation: 'The <infobox> tag holds all others and delimits the scope of the infobox.'
     },
     title: {
       children: ['default', 'format'],
-      attributes: ['source'],
+      attributes: ['source', 'name'],
       documentation: 'The <title> tag states infobox title. Images used in <title> tags do not appear on mobile.'
     },
     data: {
       children: ['default', 'label', 'format'],
-      attributes: ['source', 'span', 'layout'],
+      attributes: ['source', 'span', 'layout', 'name'],
       documentation: 'The <data> tag is the standard key-value tag.'
     },
     label: {
@@ -93,7 +93,7 @@ PIHandler.schema = {
     },
     image: {
       children: ['alt', 'caption', 'default'],
-      attributes: ['source'],
+      attributes: ['source', 'name'],
       documentation: 'The <image> tag is used to insert images or video inside an infobox. It can only be styled using the community\'s CSS, and cannot be manually resized. Images are normalized, such that [[File:Example.jpg]] and Example.jpg do the same thing. Multiple images can be passed by using a <gallery> tag.\n\nHere, the default tag is used to specify an image to be used when no image has been chosen on an article. For example, <default>Example.jpg</default>.'
     },
     alt: {
@@ -108,20 +108,26 @@ PIHandler.schema = {
     },
     group: {
       children: ['data', 'header', 'image', 'title', 'group', 'navigation', 'panel'],
-      attributes: ['layout', 'show', 'collapse', 'row-items'],
+      attributes: ['layout', 'show', 'collapse', 'row-items', 'name'],
       documentation: 'The <data> tag is used for grouping fields, can provide header for each group. A group won\'t be rendered (including any headers) if all fields are empty. However, if the show attribute is set to incomplete, it will render all of the group\'s fields if at least one field is not empty.'
     },
     header: {
+      attributes: ['name'],
       documentation: 'The <header> tag denotes the beginning of a section or group of tags.'
     },
     navigation: {
+      attributes: ['name'],
       documentation: 'The <navigation> tag is used for providing any wikitext.'
     },
     panel: {
-      children: ['section']
+      children: ['header', 'section'],
+      attributes: ['name'],
+      documentation: 'The <panel> tag is used to create tabbed interfaces, where the contents of each tab is wrapped in a <section> tag.'
     },
     section: {
-      children: ['label', 'title', 'image', 'header', 'navigation', 'data', 'group']
+      children: ['title', 'data', 'label', 'image', 'group', 'header', 'navigation'],
+      attributes: ['name'],
+      documentation: 'The <section> tag represents the contents of a tab. The clickable toggle is represented by a <label> tag. Labels default to their zero-based index if omitted; if all tabs within a panel are unlabeled, then they are stacked vertically.'
     }
   }
 }
